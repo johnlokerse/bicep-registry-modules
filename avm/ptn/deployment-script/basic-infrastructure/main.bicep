@@ -19,8 +19,17 @@ param storageAccountNetworkAcls object = {
 param privateEndpointName string
 param privateEndpointNicName string
 
+param virtualNetworkName string
+param virtualNetworkAddressPrefixes string[]
+param subnetPrivateEndpoint subnetType
+param subnetContainerInstance subnetType
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var combineSubnets = array(union(subnetPrivateEndpoint, subnetContainerInstance))
+var roleStorageFileDataPrivilegedContributorId = '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+var privateDnsZoneName = 'privatelink.file.core.windows.net'
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
@@ -55,7 +64,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
     name: virtualNetworkName
     location: location
     addressPrefixes: virtualNetworkAddressPrefixes
-    subnets: []
+    subnets: combineSubnets
   }
 }
 
@@ -67,6 +76,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     skuName: storageAccountSkuName
     publicNetworkAccess: storageAccountPublicNetworkAccess
     networkAcls: storageAccountNetworkAcls
+    roleAssignments: [
+      {
+        principalId: managedIdentity.outputs.principalId
+        roleDefinitionIdOrName: roleStorageFileDataPrivilegedContributorId
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -75,8 +91,10 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.4.3' = {
   params: {
     name: privateEndpointName
     location: location
-    privateLinkServiceId: null ?? storageAccount.outputs.resourceId
-    subnetId: null ?? virtualNetwork.outputs.subnetNames
+    subnetResourceId: null ?? first(filter(
+      virtualNetwork.outputs.subnetResourceIds,
+      arg => contains(arg, subnetPrivateEndpoint.name)
+    ))
     privateLinkServiceConnections: [
       {
         name: storageAccount.outputs.resourceId
@@ -92,104 +110,27 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.4.3' = {
   }
 }
 
-resource resVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
-  name: 'my-vnet'
-  location: parLocation
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '192.168.4.0/23'
-      ]
-    }
-  }
-
-  resource resPrivateEndpointSubnet 'subnets' = {
-    name: 'PrivateEndpointSubnet'
-    properties: {
-      addressPrefixes: [
-        '192.168.4.0/24'
-      ]
-    }
-  }
-
-  resource resContainerInstanceSubnet 'subnets' = {
-    name: 'ContainerInstanceSubnet'
-    properties: {
-      addressPrefix: '192.168.5.0/24'
-      delegations: [
-        {
-          name: 'containerDelegation'
-          properties: {
-            serviceName: 'Microsoft.ContainerInstance/containerGroups'
-          }
-        }
-      ]
-    }
-  }
-}
-
-resource resPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
-  name: resStorageAccount.name
-  location: parLocation
-  properties: {
-    privateLinkServiceConnections: [
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.1' = {
+  name: '${uniqueString(deployment().name, privateDnsZoneName, location)}-private-dns-zone-deployment'
+  params: {
+    name: privateDnsZoneName
+    location: location
+    virtualNetworkLinks: [
       {
-        name: resStorageAccount.name
-        properties: {
-          privateLinkServiceId: resStorageAccount.id
-          groupIds: [
-            'file'
-          ]
-        }
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
       }
     ]
-    customNetworkInterfaceName: '${resStorageAccount.name}-nic'
-    subnet: {
-      id: resVirtualNetwork::resPrivateEndpointSubnet.id
-    }
-  }
-}
-
-resource resStorageFileDataPrivilegedContributorRef 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
-  scope: tenant()
-}
-
-resource resRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resStorageFileDataPrivilegedContributorRef.id, resManagedIdentity.id, resStorageAccount.id)
-  scope: resStorageAccount
-  properties: {
-    principalId: resManagedIdentity.properties.principalId
-    roleDefinitionId: resStorageFileDataPrivilegedContributorRef.id
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource resPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.file.core.windows.net'
-  location: 'global'
-
-  resource resVirtualNetworkLink 'virtualNetworkLinks' = {
-    name: uniqueString(resVirtualNetwork.name)
-    location: 'global'
-    properties: {
-      registrationEnabled: false
-      virtualNetwork: {
-        id: resVirtualNetwork.id
+    a: [
+      {
+        name: storageAccount.outputs.name
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: first(first(privateEndpoint.outputs.customDnsConfigs)!.ipAddresses)
+          }
+        ]
       }
-    }
-  }
-
-  resource resRecord 'A' = {
-    name: resStorageAccount.name
-    properties: {
-      ttl: 10
-      aRecords: [
-        {
-          ipv4Address: first(first(resPrivateEndpoint.properties.customDnsConfigs)!.ipAddresses)
-        }
-      ]
-    }
+    ]
   }
 }
 
@@ -222,4 +163,21 @@ resource resPrivateDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host "Hello World!"'
   }
+}
+
+type subnetType = {
+  @description('Required. The name of the resource that is unique within a resource group. This name can be used to access the resource.')
+  name: string
+
+  @description('Required. List of address prefixes for the subnet.')
+  addressPrefixes: string[]
+
+  @description('Optional. An array of references to the delegations on the subnet.')
+  delegations: {
+    @description('Required. The name of the resource that is unique within a subnet. This name can be used to access the resource.')
+    name: string
+
+    @description('Required. The name of the service to whom the subnet should be delegated (e.g. Microsoft.Sql/servers).')
+    serviceName: string
+  }[]?
 }
