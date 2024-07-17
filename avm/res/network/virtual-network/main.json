@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7480083063423370687"
+      "templateHash": "15130391428992634372"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -669,7 +669,7 @@
                 "privateEndpointNetworkPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'privateEndpointNetworkPolicies')]",
                 "privateLinkServiceNetworkPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies')]",
                 "routeTable": "[if(not(empty(tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'routeTableResourceId'))), createObject('id', tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'routeTableResourceId')), null())]",
-                "serviceEndpoints": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnets')].serviceEndpoints]",
+                "serviceEndpoints": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'serviceEndpoints')]",
                 "serviceEndpointPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'serviceEndpointPolicies')]"
               }
             }

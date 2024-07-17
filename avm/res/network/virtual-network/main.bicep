@@ -145,7 +145,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
                 id: subnet.?routeTableResourceId
               }
             : null
-          serviceEndpoints: subnet.serviceEndpoints
+          serviceEndpoints: subnet.?serviceEndpoints
           serviceEndpointPolicies: subnet.?serviceEndpointPolicies
         }
       }
