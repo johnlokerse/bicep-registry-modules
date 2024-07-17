@@ -172,7 +172,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         addressPrefix: '<addressPrefix>'
         delegations: [
           {
-            name: 'netappDel'
+            name: 'Microsoft.Netapp/volumes'
             serviceName: 'Microsoft.Netapp/volumes'
           }
         ]
@@ -308,7 +308,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "addressPrefix": "<addressPrefix>",
           "delegations": [
             {
-              "name": "netappDel",
+              "name": "Microsoft.Netapp/volumes",
               "serviceName": "Microsoft.Netapp/volumes"
             }
           ],
@@ -555,7 +555,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         addressPrefix: '<addressPrefix>'
         delegations: [
           {
-            name: 'netappDel'
+            name: 'Microsoft.Netapp/volumes'
             serviceName: 'Microsoft.Netapp/volumes'
           }
         ]
@@ -675,7 +675,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "addressPrefix": "<addressPrefix>",
           "delegations": [
             {
-              "name": "netappDel",
+              "name": "Microsoft.Netapp/volumes",
               "serviceName": "Microsoft.Netapp/volumes"
             }
           ],
