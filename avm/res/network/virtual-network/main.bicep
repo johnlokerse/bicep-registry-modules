@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 param addressPrefixes array
 
 @description('Optional. An Array of subnets to deploy to the Virtual Network.')
-param subnets array = []
+param subnets subnetType
 
 @description('Optional. DNS Servers associated to the Virtual Network.')
 param dnsServers array = []
@@ -169,32 +169,24 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
 
 @batchSize(1)
 module virtualNetwork_subnets 'subnet/main.bicep' = [
-  for (subnet, index) in subnets: {
+  for (subnet, index) in subnets ?? []: {
     name: '${uniqueString(deployment().name, location)}-subnet-${index}'
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
       addressPrefix: subnet.addressPrefix
-      addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-      applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
-        ? subnet.applicationGatewayIPConfigurations
-        : []
-      delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-      ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-      natGatewayResourceId: contains(subnet, 'natGatewayResourceId') ? subnet.natGatewayResourceId : ''
-      networkSecurityGroupResourceId: contains(subnet, 'networkSecurityGroupResourceId')
-        ? subnet.networkSecurityGroupResourceId
-        : ''
-      privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
-        ? subnet.privateEndpointNetworkPolicies
-        : ''
-      privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
-        ? subnet.privateLinkServiceNetworkPolicies
-        : ''
-      roleAssignments: contains(subnet, 'roleAssignments') ? subnet.roleAssignments : []
-      routeTableResourceId: contains(subnet, 'routeTableResourceId') ? subnet.routeTableResourceId : ''
-      serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
-      serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
+      addressPrefixes: subnet.?addressPrefixes
+      applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
+      delegations: subnet.?delegations
+      ipAllocations: subnet.?ipAllocations
+      natGatewayResourceId: subnet.?natGatewayResourceId
+      networkSecurityGroupResourceId: subnet.?networkSecurityGroupResourceId
+      privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+      privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies
+      roleAssignments: subnet.?roleAssignments
+      routeTableResourceId: subnet.?routeTableResourceId
+      serviceEndpointPolicies: subnet.?serviceEndpointPolicies
+      serviceEndpoints: subnet.?serviceEndpoints
     }
   }
 ]
@@ -320,11 +312,11 @@ output resourceId string = virtualNetwork.id
 output name string = virtualNetwork.name
 
 @description('The names of the deployed subnets.')
-output subnetNames array = [for subnet in subnets: subnet.name]
+output subnetNames array = [for subnet in subnets ?? []: subnet.name]
 
 @description('The resource IDs of the deployed subnets.')
 output subnetResourceIds array = [
-  for subnet in subnets: az.resourceId('Microsoft.Network/virtualNetworks/subnets', name, subnet.name)
+  for subnet in subnets ?? []: az.resourceId('Microsoft.Network/virtualNetworks/subnets', name, subnet.name)
 ]
 
 @description('The location the resource was deployed into.')
@@ -410,18 +402,45 @@ type diagnosticSettingType = {
 }[]?
 
 type subnetType = {
+  @description('Required. The resource name.')
   name: string
+
+  @description('Required. The address prefix for the subnet.')
   addressPrefix: string
+
+  @description('Optional. List of address prefixes for the subnet.')
   addressPrefixes: string[]?
+
+  @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: array?
+
+  @description('Optional. An array of references to the delegations on the subnet.')
   delegations: array?
+
+  @description('Optional. Array of IpAllocation which reference this subnet.')
   ipAllocations: array?
+
+  @description('Optional. The resource ID of the NAT gateway associated with the subnet.')
   natGatewayResourceId: string?
+
+  @description('Optional. The resource ID of the network security group associated with the subnet.')
   networkSecurityGroupResourceId: string?
-  privateEndpointNetworkPolicies: string?
-  privateLinkServiceNetworkPolicies: string?
+
+  @description('Optional. Enable or Disable apply network policies on private endpoint in the subnet.')
+  privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
+
+  @description('Optional. Enable or Disable apply network policies on private link service in the subnet.')
+  privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
+
+  @description('Optional. Array of role assignments to create.')
   roleAssignments: array?
+
+  @description('Optional. The resource ID of the route table to assign to the subnet.')
   routeTableResourceId: string?
+
+  @description('Optional. Array of service endpoint policies.')
   serviceEndpointPolicies: array?
+
+  @description('Optional. Array of service endpoints.')
   serviceEndpoints: array?
-}
+}[]?

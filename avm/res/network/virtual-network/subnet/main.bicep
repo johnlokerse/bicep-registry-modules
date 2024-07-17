@@ -12,47 +12,47 @@ param virtualNetworkName string
 param addressPrefix string
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
-param networkSecurityGroupResourceId string = ''
+param networkSecurityGroupResourceId string?
 
 @description('Optional. The resource ID of the route table to assign to the subnet.')
-param routeTableResourceId string = ''
+param routeTableResourceId string?
 
 @description('Optional. The service endpoints to enable on the subnet.')
-param serviceEndpoints array = []
+param serviceEndpoints array?
 
 @description('Optional. The delegations to enable on the subnet.')
-param delegations array = []
+param delegations array?
 
 @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
-param natGatewayResourceId string = ''
+param natGatewayResourceId string?
 
 @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
-  ''
+  'NetworkSecurityGroupEnabled'
+  'RouteTableEnabled'
 ])
-param privateEndpointNetworkPolicies string = ''
+param privateEndpointNetworkPolicies string?
 
 @description('Optional. enable or disable apply network policies on private link service in the subnet.')
 @allowed([
   'Disabled'
   'Enabled'
-  ''
 ])
-param privateLinkServiceNetworkPolicies string = ''
+param privateLinkServiceNetworkPolicies string?
 
 @description('Optional. List of address prefixes for the subnet.')
-param addressPrefixes array = []
+param addressPrefixes array?
 
 @description('Optional. Application gateway IP configurations of virtual network resource.')
-param applicationGatewayIPConfigurations array = []
+param applicationGatewayIPConfigurations array?
 
 @description('Optional. Array of IpAllocation which reference this subnet.')
-param ipAllocations array = []
+param ipAllocations array?
 
 @description('Optional. An array of service endpoint policies.')
-param serviceEndpointPolicies array = []
+param serviceEndpointPolicies array?
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
