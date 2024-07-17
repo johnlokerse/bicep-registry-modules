@@ -408,3 +408,20 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type subnetType = {
+  name: string
+  addressPrefix: string
+  addressPrefixes: string[]?
+  applicationGatewayIPConfigurations: array?
+  delegations: array?
+  ipAllocations: array?
+  natGatewayResourceId: string?
+  networkSecurityGroupResourceId: string?
+  privateEndpointNetworkPolicies: string?
+  privateLinkServiceNetworkPolicies: string?
+  roleAssignments: array?
+  routeTableResourceId: string?
+  serviceEndpointPolicies: array?
+  serviceEndpoints: array?
+}
