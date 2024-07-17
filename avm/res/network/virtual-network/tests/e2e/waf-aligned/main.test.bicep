@@ -126,7 +126,7 @@ module testDeployment '../../../main.bicep' = [
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
           delegations: [
             {
-              name: 'netappDel'
+              name: 'Microsoft.Netapp/volumes'
               serviceName: 'Microsoft.Netapp/volumes'
             }
           ]
