@@ -39,7 +39,7 @@ This module deploys a Virtual Network Subnet.
 | [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. |
 | [`applicationGatewayIPConfigurations`](#parameter-applicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
 | [`delegations`](#parameter-delegations) | array | The delegations to enable on the subnet. |
-| [`ipAllocations`](#parameter-ipallocations) | array | Array of IpAllocation which reference this subnet. |
+| [`ipAllocations`](#parameter-ipallocations) | array | Array of IpAllocation IDs which reference this subnet. |
 | [`name`](#parameter-name) | string | The Name of the subnet resource. |
 | [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-networksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
@@ -70,7 +70,6 @@ List of address prefixes for the subnet.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `applicationGatewayIPConfigurations`
 
@@ -78,7 +77,6 @@ Application gateway IP configurations of virtual network resource.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `delegations`
 
@@ -86,15 +84,13 @@ The delegations to enable on the subnet.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `ipAllocations`
 
-Array of IpAllocation which reference this subnet.
+Array of IpAllocation IDs which reference this subnet.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `name`
 
@@ -109,7 +105,6 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `networkSecurityGroupResourceId`
 
@@ -117,7 +112,6 @@ The resource ID of the network security group to assign to the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `privateEndpointNetworkPolicies`
 
@@ -125,13 +119,13 @@ enable or disable apply network policies on private endpoint in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
   ]
   ```
 
@@ -141,11 +135,9 @@ enable or disable apply network policies on private link service in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -246,7 +238,6 @@ The resource ID of the route table to assign to the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `serviceEndpointPolicies`
 
@@ -254,7 +245,6 @@ An array of service endpoint policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `serviceEndpoints`
 
@@ -262,7 +252,6 @@ The service endpoints to enable on the subnet.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

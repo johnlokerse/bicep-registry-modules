@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7765825140175449922"
+      "templateHash": "7480083063423370687"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -223,6 +223,289 @@
         }
       },
       "nullable": true
+    },
+    "subnetType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource name."
+            }
+          },
+          "addressPrefix": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The address prefix for the subnet."
+            }
+          },
+          "addressPrefixes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of address prefixes for the subnet."
+            }
+          },
+          "applicationGatewayIPConfigurations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the IP configuration that is unique within an Application Gateway."
+                  }
+                },
+                "subnetId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Reference to the subnet resource. A subnet from where application gateway gets its private address."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application gateway IP configurations of virtual network resource."
+            }
+          },
+          "delegations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the resource that is unique within a subnet. This name can be used to access the resource."
+                  }
+                },
+                "serviceName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the service to whom the subnet should be delegated (e.g. Microsoft.Sql/servers)."
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource type."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. An array of references to the delegations on the subnet."
+            }
+          },
+          "ipAllocationsIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of IpAllocation IDs which reference this subnet."
+            }
+          },
+          "natGatewayResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource ID of the NAT gateway associated with the subnet."
+            }
+          },
+          "networkSecurityGroupResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource ID of the network security group associated with the subnet."
+            }
+          },
+          "privateEndpointNetworkPolicies": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled",
+              "NetworkSecurityGroupEnabled",
+              "RouteTableEnabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable or Disable apply network policies on private endpoint in the subnet."
+            }
+          },
+          "privateLinkServiceNetworkPolicies": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enable or Disable apply network policies on private link service in the subnet."
+            }
+          },
+          "roleAssignments": {
+            "type": "array",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "routeTableResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The resource ID of the route table to assign to the subnet."
+            }
+          },
+          "serviceEndpointPolicies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. Resource location."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource tags."
+                  }
+                },
+                "contextualServiceEndpointPolicies": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A collection of contextual service endpoint policy."
+                  }
+                },
+                "serviceAlias": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The alias indicating if the policy belongs to a service."
+                  }
+                },
+                "serviceEndpointPolicyDefinitions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The name of the resource that is unique within a resource group. This name can be used to access the resource."
+                        }
+                      },
+                      "type": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The type of the resource."
+                        }
+                      },
+                      "properties": {
+                        "type": "object",
+                        "properties": {
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "maxLength": 140,
+                            "metadata": {
+                              "description": "Optional. A description for this rule."
+                            }
+                          },
+                          "service": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Service endpoint name."
+                            }
+                          },
+                          "serviceResources": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. A list of service resources."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Properties of the service endpoint policy definition."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A collection of service endpoint policy definitions of the service endpoint policy."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of service endpoint policies."
+            }
+          },
+          "serviceEndpoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "service": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The type of the endpoint service."
+                  }
+                },
+                "locations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A list of locations."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of service endpoints."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -246,8 +529,7 @@
       }
     },
     "subnets": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/subnetType",
       "metadata": {
         "description": "Optional. An Array of subnets to deploy to the Virtual Network."
       }
@@ -373,22 +655,22 @@
         "copy": [
           {
             "name": "subnets",
-            "count": "[length(parameters('subnets'))]",
+            "count": "[length(coalesce(parameters('subnets'), createArray()))]",
             "input": {
-              "name": "[parameters('subnets')[copyIndex('subnets')].name]",
+              "name": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnets')].name]",
               "properties": {
-                "addressPrefix": "[parameters('subnets')[copyIndex('subnets')].addressPrefix]",
-                "addressPrefixes": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'addressPrefixes'), parameters('subnets')[copyIndex('subnets')].addressPrefixes, createArray())]",
-                "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
-                "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
-                "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                "natGateway": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].natGatewayResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
-                "networkSecurityGroup": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
-                "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
-                "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                "routeTable": "[if(and(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), not(empty(parameters('subnets')[copyIndex('subnets')].routeTableResourceId))), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
-                "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
-                "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
+                "addressPrefix": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnets')].addressPrefix]",
+                "addressPrefixes": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'addressPrefixes')]",
+                "applicationGatewayIPConfigurations": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'applicationGatewayIPConfigurations')]",
+                "delegations": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'delegations')]",
+                "ipAllocations": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'ipAllocationsIds')]",
+                "natGateway": "[if(not(empty(tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'natGatewayResourceId'))), createObject('id', tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'natGatewayResourceId')), null())]",
+                "networkSecurityGroup": "[if(not(empty(tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'networkSecurityGroupResourceId'))), createObject('id', tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'networkSecurityGroupResourceId')), null())]",
+                "privateEndpointNetworkPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'privateEndpointNetworkPolicies')]",
+                "privateLinkServiceNetworkPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies')]",
+                "routeTable": "[if(not(empty(tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'routeTableResourceId'))), createObject('id', tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'routeTableResourceId')), null())]",
+                "serviceEndpoints": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnets')].serviceEndpoints]",
+                "serviceEndpointPolicies": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnets')], 'serviceEndpointPolicies')]"
               }
             }
           }
@@ -483,7 +765,7 @@
     "virtualNetwork_subnets": {
       "copy": {
         "name": "virtualNetwork_subnets",
-        "count": "[length(parameters('subnets'))]",
+        "count": "[length(coalesce(parameters('subnets'), createArray()))]",
         "mode": "serial",
         "batchSize": 1
       },
@@ -500,23 +782,47 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('subnets')[copyIndex()].name]"
+            "value": "[coalesce(parameters('subnets'), createArray())[copyIndex()].name]"
           },
           "addressPrefix": {
-            "value": "[parameters('subnets')[copyIndex()].addressPrefix]"
+            "value": "[coalesce(parameters('subnets'), createArray())[copyIndex()].addressPrefix]"
           },
-          "addressPrefixes": "[if(contains(parameters('subnets')[copyIndex()], 'addressPrefixes'), createObject('value', parameters('subnets')[copyIndex()].addressPrefixes), createObject('value', createArray()))]",
-          "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIPConfigurations'), createObject('value', parameters('subnets')[copyIndex()].applicationGatewayIPConfigurations), createObject('value', createArray()))]",
-          "delegations": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), createObject('value', parameters('subnets')[copyIndex()].delegations), createObject('value', createArray()))]",
-          "ipAllocations": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), createObject('value', parameters('subnets')[copyIndex()].ipAllocations), createObject('value', createArray()))]",
-          "natGatewayResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayResourceId'), createObject('value', parameters('subnets')[copyIndex()].natGatewayResourceId), createObject('value', ''))]",
-          "networkSecurityGroupResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('subnets')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
-          "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies), createObject('value', ''))]",
-          "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), createObject('value', parameters('subnets')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "routeTableResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableResourceId'), createObject('value', parameters('subnets')[copyIndex()].routeTableResourceId), createObject('value', ''))]",
-          "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpointPolicies), createObject('value', createArray()))]",
-          "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]"
+          "addressPrefixes": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefixes')]"
+          },
+          "applicationGatewayIPConfigurations": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'applicationGatewayIPConfigurations')]"
+          },
+          "delegations": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'delegations')]"
+          },
+          "ipAllocations": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'ipAllocationsIds')]"
+          },
+          "natGatewayResourceId": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'natGatewayResourceId')]"
+          },
+          "networkSecurityGroupResourceId": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'networkSecurityGroupResourceId')]"
+          },
+          "privateEndpointNetworkPolicies": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'privateEndpointNetworkPolicies')]"
+          },
+          "privateLinkServiceNetworkPolicies": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'privateLinkServiceNetworkPolicies')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "routeTableResourceId": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'routeTableResourceId')]"
+          },
+          "serviceEndpointPolicies": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'serviceEndpointPolicies')]"
+          },
+          "serviceEndpoints": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'serviceEndpoints')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -526,7 +832,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "9634407864982934565"
+              "templateHash": "6694347579036915879"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -621,46 +927,47 @@
             },
             "networkSecurityGroupResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the network security group to assign to the subnet."
               }
             },
             "routeTableResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the route table to assign to the subnet."
               }
             },
             "serviceEndpoints": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The service endpoints to enable on the subnet."
               }
             },
             "delegations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The delegations to enable on the subnet."
               }
             },
             "natGatewayResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The resource ID of the NAT Gateway to use for the subnet."
               }
             },
             "privateEndpointNetworkPolicies": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "Disabled",
                 "Enabled",
-                ""
+                "NetworkSecurityGroupEnabled",
+                "RouteTableEnabled"
               ],
               "metadata": {
                 "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
@@ -668,11 +975,10 @@
             },
             "privateLinkServiceNetworkPolicies": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "Disabled",
-                "Enabled",
-                ""
+                "Enabled"
               ],
               "metadata": {
                 "description": "Optional. enable or disable apply network policies on private link service in the subnet."
@@ -680,28 +986,28 @@
             },
             "addressPrefixes": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. List of address prefixes for the subnet."
               }
             },
             "applicationGatewayIPConfigurations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Application gateway IP configurations of virtual network resource."
               }
             },
             "ipAllocations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Array of IpAllocation which reference this subnet."
+                "description": "Optional. Array of IpAllocation IDs which reference this subnet."
               }
             },
             "serviceEndpointPolicies": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An array of service endpoint policies."
               }
@@ -735,18 +1041,59 @@
               "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "properties": {
+                "copy": [
+                  {
+                    "name": "delegations",
+                    "count": "[length(coalesce(parameters('delegations'), createArray()))]",
+                    "input": {
+                      "name": "[tryGet(coalesce(parameters('delegations'), createArray())[copyIndex('delegations')], 'name')]",
+                      "properties": {
+                        "serviceName": "[tryGet(coalesce(parameters('delegations'), createArray())[copyIndex('delegations')], 'serviceName')]"
+                      },
+                      "type": "[tryGet(coalesce(parameters('delegations'), createArray())[copyIndex('delegations')], 'type')]"
+                    }
+                  },
+                  {
+                    "name": "applicationGatewayIPConfigurations",
+                    "count": "[length(coalesce(parameters('applicationGatewayIPConfigurations'), createArray()))]",
+                    "input": {
+                      "name": "[tryGet(coalesce(parameters('applicationGatewayIPConfigurations'), createArray())[copyIndex('applicationGatewayIPConfigurations')], 'name')]",
+                      "properties": {
+                        "subnet": {
+                          "id": "[tryGet(coalesce(parameters('applicationGatewayIPConfigurations'), createArray())[copyIndex('applicationGatewayIPConfigurations')], 'subnetId')]"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "name": "ipAllocations",
+                    "count": "[length(coalesce(parameters('ipAllocations'), createArray()))]",
+                    "input": {
+                      "id": "[coalesce(parameters('ipAllocations'), createArray())[copyIndex('ipAllocations')]]"
+                    }
+                  },
+                  {
+                    "name": "serviceEndpointPolicies",
+                    "count": "[length(coalesce(parameters('serviceEndpointPolicies'), createArray()))]",
+                    "input": {
+                      "location": "[tryGet(coalesce(parameters('serviceEndpointPolicies'), createArray())[copyIndex('serviceEndpointPolicies')], 'location')]",
+                      "tags": "[tryGet(coalesce(parameters('serviceEndpointPolicies'), createArray())[copyIndex('serviceEndpointPolicies')], 'tags')]",
+                      "properties": {
+                        "contextualServiceEndpointPolicies": "[tryGet(coalesce(parameters('serviceEndpointPolicies'), createArray())[copyIndex('serviceEndpointPolicies')], 'contextualServiceEndpointPolicies')]",
+                        "serviceAlias": "[tryGet(coalesce(parameters('serviceEndpointPolicies'), createArray())[copyIndex('serviceEndpointPolicies')], 'serviceAlias')]",
+                        "serviceEndpointPolicyDefinitions": "[tryGet(coalesce(parameters('serviceEndpointPolicies'), createArray())[copyIndex('serviceEndpointPolicies')], 'serviceEndpointPolicyDefinitions')]"
+                      }
+                    }
+                  }
+                ],
                 "addressPrefix": "[parameters('addressPrefix')]",
                 "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
                 "serviceEndpoints": "[parameters('serviceEndpoints')]",
-                "delegations": "[parameters('delegations')]",
                 "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
                 "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
-                "addressPrefixes": "[parameters('addressPrefixes')]",
-                "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
-                "ipAllocations": "[parameters('ipAllocations')]",
-                "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
+                "addressPrefixes": "[parameters('addressPrefixes')]"
               },
               "dependsOn": [
                 "virtualNetwork"
@@ -1134,8 +1481,8 @@
         "description": "The names of the deployed subnets."
       },
       "copy": {
-        "count": "[length(parameters('subnets'))]",
-        "input": "[parameters('subnets')[copyIndex()].name]"
+        "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+        "input": "[coalesce(parameters('subnets'), createArray())[copyIndex()].name]"
       }
     },
     "subnetResourceIds": {
@@ -1144,8 +1491,8 @@
         "description": "The resource IDs of the deployed subnets."
       },
       "copy": {
-        "count": "[length(parameters('subnets'))]",
-        "input": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('name'), parameters('subnets')[copyIndex()].name)]"
+        "count": "[length(coalesce(parameters('subnets'), createArray()))]",
+        "input": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('name'), coalesce(parameters('subnets'), createArray())[copyIndex()].name)]"
       }
     },
     "location": {

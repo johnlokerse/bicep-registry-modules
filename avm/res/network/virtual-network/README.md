@@ -173,9 +173,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         delegations: [
           {
             name: 'netappDel'
-            properties: {
-              serviceName: 'Microsoft.Netapp/volumes'
-            }
+            serviceName: 'Microsoft.Netapp/volumes'
           }
         ]
         name: 'az-subnet-x-002'
@@ -311,9 +309,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "delegations": [
             {
               "name": "netappDel",
-              "properties": {
-                "serviceName": "Microsoft.Netapp/volumes"
-              }
+              "serviceName": "Microsoft.Netapp/volumes"
             }
           ],
           "name": "az-subnet-x-002",
@@ -560,9 +556,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         delegations: [
           {
             name: 'netappDel'
-            properties: {
-              serviceName: 'Microsoft.Netapp/volumes'
-            }
+            serviceName: 'Microsoft.Netapp/volumes'
           }
         ]
         name: 'az-subnet-x-002'
@@ -682,9 +676,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "delegations": [
             {
               "name": "netappDel",
-              "properties": {
-                "serviceName": "Microsoft.Netapp/volumes"
-              }
+              "serviceName": "Microsoft.Netapp/volumes"
             }
           ],
           "name": "az-subnet-x-002",
@@ -1089,7 +1081,318 @@ An Array of subnets to deploy to the Virtual Network.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. |
+| [`name`](#parameter-subnetsname) | string | The resource name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. |
+| [`applicationGatewayIPConfigurations`](#parameter-subnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
+| [`delegations`](#parameter-subnetsdelegations) | array | An array of references to the delegations on the subnet. |
+| [`ipAllocationsIds`](#parameter-subnetsipallocationsids) | array | Array of IpAllocation IDs which reference this subnet. |
+| [`natGatewayResourceId`](#parameter-subnetsnatgatewayresourceid) | string | The resource ID of the NAT gateway associated with the subnet. |
+| [`networkSecurityGroupResourceId`](#parameter-subnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group associated with the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-subnetsprivateendpointnetworkpolicies) | string | Enable or Disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-subnetsprivatelinkservicenetworkpolicies) | string | Enable or Disable apply network policies on private link service in the subnet. |
+| [`roleAssignments`](#parameter-subnetsroleassignments) | array | Array of role assignments to create. |
+| [`routeTableResourceId`](#parameter-subnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-subnetsserviceendpointpolicies) | array | Array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | Array of service endpoints. |
+
+### Parameter: `subnets.addressPrefix`
+
+The address prefix for the subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.name`
+
+The resource name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.addressPrefixes`
+
+List of address prefixes for the subnet.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.applicationGatewayIPConfigurations`
+
+Application gateway IP configurations of virtual network resource.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsapplicationgatewayipconfigurationsname) | string | Name of the IP configuration that is unique within an Application Gateway. |
+| [`subnetId`](#parameter-subnetsapplicationgatewayipconfigurationssubnetid) | string | Reference to the subnet resource. A subnet from where application gateway gets its private address. |
+
+### Parameter: `subnets.applicationGatewayIPConfigurations.name`
+
+Name of the IP configuration that is unique within an Application Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.applicationGatewayIPConfigurations.subnetId`
+
+Reference to the subnet resource. A subnet from where application gateway gets its private address.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.delegations`
+
+An array of references to the delegations on the subnet.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsdelegationsname) | string | The name of the resource that is unique within a subnet. This name can be used to access the resource. |
+| [`serviceName`](#parameter-subnetsdelegationsservicename) | string | The name of the service to whom the subnet should be delegated (e.g. Microsoft.Sql/servers). |
+| [`type`](#parameter-subnetsdelegationstype) | string | Resource type. |
+
+### Parameter: `subnets.delegations.name`
+
+The name of the resource that is unique within a subnet. This name can be used to access the resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.delegations.serviceName`
+
+The name of the service to whom the subnet should be delegated (e.g. Microsoft.Sql/servers).
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.delegations.type`
+
+Resource type.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.ipAllocationsIds`
+
+Array of IpAllocation IDs which reference this subnet.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.natGatewayResourceId`
+
+The resource ID of the NAT gateway associated with the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.networkSecurityGroupResourceId`
+
+The resource ID of the network security group associated with the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.privateEndpointNetworkPolicies`
+
+Enable or Disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `subnets.privateLinkServiceNetworkPolicies`
+
+Enable or Disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `subnets.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies`
+
+Array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contextualServiceEndpointPolicies`](#parameter-subnetsserviceendpointpoliciescontextualserviceendpointpolicies) | array | A collection of contextual service endpoint policy. |
+| [`location`](#parameter-subnetsserviceendpointpolicieslocation) | string | Resource location. |
+| [`serviceAlias`](#parameter-subnetsserviceendpointpoliciesservicealias) | string | The alias indicating if the policy belongs to a service. |
+| [`serviceEndpointPolicyDefinitions`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitions) | array | A collection of service endpoint policy definitions of the service endpoint policy. |
+| [`tags`](#parameter-subnetsserviceendpointpoliciestags) | object | Resource tags. |
+
+### Parameter: `subnets.serviceEndpointPolicies.contextualServiceEndpointPolicies`
+
+A collection of contextual service endpoint policy.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.serviceEndpointPolicies.location`
+
+Resource location.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceAlias`
+
+The alias indicating if the policy belongs to a service.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions`
+
+A collection of service endpoint policy definitions of the service endpoint policy.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionsname) | string | The name of the resource that is unique within a resource group. This name can be used to access the resource. |
+| [`properties`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionsproperties) | object | Properties of the service endpoint policy definition. |
+| [`type`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionstype) | string | The type of the resource. |
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.name`
+
+The name of the resource that is unique within a resource group. This name can be used to access the resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.properties`
+
+Properties of the service endpoint policy definition.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionspropertiesdescription) | string | A description for this rule. |
+| [`service`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionspropertiesservice) | string | Service endpoint name. |
+| [`serviceResources`](#parameter-subnetsserviceendpointpoliciesserviceendpointpolicydefinitionspropertiesserviceresources) | array | A list of service resources. |
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.properties.description`
+
+A description for this rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.properties.service`
+
+Service endpoint name.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.properties.serviceResources`
+
+A list of service resources.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.serviceEndpointPolicies.serviceEndpointPolicyDefinitions.type`
+
+The type of the resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
+### Parameter: `subnets.serviceEndpoints`
+
+Array of service endpoints.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`locations`](#parameter-subnetsserviceendpointslocations) | array | A list of locations. |
+| [`service`](#parameter-subnetsserviceendpointsservice) | string | The type of the endpoint service. |
+
+### Parameter: `subnets.serviceEndpoints.locations`
+
+A list of locations.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.serviceEndpoints.service`
+
+The type of the endpoint service.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
