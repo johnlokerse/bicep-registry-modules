@@ -484,10 +484,10 @@ type subnetType = {
 
   @description('Optional. Array of service endpoints.')
   serviceEndpoints: {
-    @description('Required. The type of the endpoint service.')
-    service: string
+    @description('Optional. The type of the endpoint service.')
+    service: string?
 
-    @description('Required. A list of locations.')
-    locations: string[]
+    @description('Optional. A list of locations.')
+    locations: string[]?
   }[]?
 }[]?

@@ -127,9 +127,7 @@ module testDeployment '../../../main.bicep' = [
           delegations: [
             {
               name: 'netappDel'
-              properties: {
-                serviceName: 'Microsoft.Netapp/volumes'
-              }
+              serviceName: 'Microsoft.Netapp/volumes'
             }
           ]
           name: '${namePrefix}-az-subnet-x-002'
