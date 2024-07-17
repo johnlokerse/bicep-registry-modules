@@ -48,7 +48,7 @@ param addressPrefixes array?
 @description('Optional. Application gateway IP configurations of virtual network resource.')
 param applicationGatewayIPConfigurations array?
 
-@description('Optional. Array of IpAllocation which reference this subnet.')
+@description('Optional. Array of IpAllocation IDs which reference this subnet.')
 param ipAllocations array?
 
 @description('Optional. An array of service endpoint policies.')
@@ -100,15 +100,46 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
         }
       : null
     serviceEndpoints: serviceEndpoints
-    delegations: delegations
+    delegations: [
+      for delegation in (delegations ?? []): {
+        name: delegation.?name
+        properties: {
+          serviceName: delegation.?serviceName
+        }
+        type: delegation.?type
+      }
+    ]
     privateEndpointNetworkPolicies: !empty(privateEndpointNetworkPolicies) ? any(privateEndpointNetworkPolicies) : null
     privateLinkServiceNetworkPolicies: !empty(privateLinkServiceNetworkPolicies)
       ? any(privateLinkServiceNetworkPolicies)
       : null
     addressPrefixes: addressPrefixes
-    applicationGatewayIPConfigurations: applicationGatewayIPConfigurations
-    ipAllocations: ipAllocations
-    serviceEndpointPolicies: serviceEndpointPolicies
+    applicationGatewayIPConfigurations: [
+      for applicationGatewayIPConfiguration in (applicationGatewayIPConfigurations ?? []): {
+        name: applicationGatewayIPConfiguration.?name
+        properties: {
+          subnet: {
+            id: applicationGatewayIPConfiguration.?subnetId
+          }
+        }
+      }
+    ]
+    ipAllocations: [
+      for ipAllocationId in (ipAllocations ?? []): {
+        id: ipAllocationId
+      }
+    ]
+    serviceEndpointPolicies: [
+      for serviceEndpointPolicy in (serviceEndpointPolicies ?? []): {
+        location: serviceEndpointPolicy.?location
+        tags: serviceEndpointPolicy.?tags
+        properties: {
+          contextualServiceEndpointPolicies: serviceEndpointPolicy.?contextualServiceEndpointPolicies
+          serviceAlias: serviceEndpointPolicy.?serviceAlias
+          serviceEndpointPolicyDefinitions: serviceEndpointPolicy.?serviceEndpointPolicyDefinitions
+        }
+      }
+    ]
   }
 }
 

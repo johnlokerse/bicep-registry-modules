@@ -120,39 +120,33 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' = {
       : null
     flowTimeoutInMinutes: flowTimeoutInMinutes != 0 ? flowTimeoutInMinutes : null
     subnets: [
-      for subnet in subnets: {
+      for subnet in (subnets ?? []): {
         name: subnet.name
         properties: {
           addressPrefix: subnet.addressPrefix
-          addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-          applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations')
-            ? subnet.applicationGatewayIPConfigurations
-            : []
-          delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-          ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-          natGateway: contains(subnet, 'natGatewayResourceId') && !empty(subnet.natGatewayResourceId)
+          addressPrefixes: subnet.?addressPrefixes
+          applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
+          delegations: subnet.?delegations
+          ipAllocations: subnet.?ipAllocationsIds
+          natGateway: !empty(subnet.?natGatewayResourceId)
             ? {
-                id: subnet.natGatewayResourceId
+                id: subnet.?natGatewayResourceId
               }
             : null
-          networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') && !empty(subnet.networkSecurityGroupResourceId)
+          networkSecurityGroup: !empty(subnet.?networkSecurityGroupResourceId)
             ? {
-                id: subnet.networkSecurityGroupResourceId
+                id: subnet.?networkSecurityGroupResourceId
               }
             : null
-          privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies')
-            ? subnet.privateEndpointNetworkPolicies
-            : null
-          privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies')
-            ? subnet.privateLinkServiceNetworkPolicies
-            : null
-          routeTable: contains(subnet, 'routeTableResourceId') && !empty(subnet.routeTableResourceId)
+          privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
+          privateLinkServiceNetworkPolicies: subnet.?privateLinkServiceNetworkPolicies
+          routeTable: !empty(subnet.?routeTableResourceId)
             ? {
-                id: subnet.routeTableResourceId
+                id: subnet.?routeTableResourceId
               }
             : null
-          serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
-          serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
+          serviceEndpoints: subnet.serviceEndpoints
+          serviceEndpointPolicies: subnet.?serviceEndpointPolicies
         }
       }
     ]
@@ -178,7 +172,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
       addressPrefixes: subnet.?addressPrefixes
       applicationGatewayIPConfigurations: subnet.?applicationGatewayIPConfigurations
       delegations: subnet.?delegations
-      ipAllocations: subnet.?ipAllocations
+      ipAllocations: subnet.?ipAllocationsIds
       natGatewayResourceId: subnet.?natGatewayResourceId
       networkSecurityGroupResourceId: subnet.?networkSecurityGroupResourceId
       privateEndpointNetworkPolicies: subnet.?privateEndpointNetworkPolicies
@@ -412,13 +406,28 @@ type subnetType = {
   addressPrefixes: string[]?
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
-  applicationGatewayIPConfigurations: array?
+  applicationGatewayIPConfigurations: {
+    @description('Optional. Name of the IP configuration that is unique within an Application Gateway.')
+    name: string?
+
+    @description('Optional. Reference to the subnet resource. A subnet from where application gateway gets its private address.')
+    subnetId: string?
+  }[]?
 
   @description('Optional. An array of references to the delegations on the subnet.')
-  delegations: array?
+  delegations: {
+    @description('Optional. The name of the resource that is unique within a subnet. This name can be used to access the resource.')
+    name: string?
 
-  @description('Optional. Array of IpAllocation which reference this subnet.')
-  ipAllocations: array?
+    @description('Optional. The name of the service to whom the subnet should be delegated (e.g. Microsoft.Sql/servers).')
+    serviceName: string?
+
+    @description('Optional. Resource type.')
+    type: string?
+  }[]?
+
+  @description('Optional. Array of IpAllocation IDs which reference this subnet.')
+  ipAllocationsIds: string[]?
 
   @description('Optional. The resource ID of the NAT gateway associated with the subnet.')
   natGatewayResourceId: string?
@@ -439,8 +448,46 @@ type subnetType = {
   routeTableResourceId: string?
 
   @description('Optional. Array of service endpoint policies.')
-  serviceEndpointPolicies: array?
+  serviceEndpointPolicies: {
+    @description('Optional. Resource location.')
+    location: string
+
+    @description('Optional. Resource tags.')
+    tags: object?
+
+    @description('Optional. A collection of contextual service endpoint policy.')
+    contextualServiceEndpointPolicies: string[]?
+
+    @description('Optional. The alias indicating if the policy belongs to a service.')
+    serviceAlias: string?
+
+    @description('Optional. A collection of service endpoint policy definitions of the service endpoint policy.')
+    serviceEndpointPolicyDefinitions: {
+      @description('Optional. The name of the resource that is unique within a resource group. This name can be used to access the resource.')
+      name: string?
+
+      @description('Optional. The type of the resource.')
+      type: string?
+
+      @description('Optional. Properties of the service endpoint policy definition.')
+      properties: {
+        @description('Optional. A description for this rule.')
+        @maxLength(140)
+        description: string?
+        @description('Optional. Service endpoint name.')
+        service: string?
+        @description('Optional. A list of service resources.')
+        serviceResources: string[]?
+      }?
+    }[]?
+  }[]?
 
   @description('Optional. Array of service endpoints.')
-  serviceEndpoints: array?
+  serviceEndpoints: {
+    @description('Required. The type of the endpoint service.')
+    service: string
+
+    @description('Required. A list of locations.')
+    locations: string[]
+  }[]?
 }[]?
