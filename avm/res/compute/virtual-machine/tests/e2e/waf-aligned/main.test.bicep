@@ -178,7 +178,10 @@ module testDeployment '../../../main.bicep' = [
       osType: 'Windows'
       vmSize: 'Standard_DS2_v2'
       adminPassword: password
-      zone: 2
+      zone: [
+        1
+        2
+      ]
       backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
       backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
       backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName

@@ -111,14 +111,13 @@ param availabilitySetResourceId string = ''
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
 param galleryApplications array = []
 
-@description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
+@description('Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If not set, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
-  0
   1
   2
   3
 ])
-param zone int
+param zone int[]?
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -508,7 +507,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: zone != 0 ? array(string(zone)) : null
+  zones: zone
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {

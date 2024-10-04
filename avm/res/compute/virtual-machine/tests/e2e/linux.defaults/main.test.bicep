@@ -67,7 +67,6 @@ module testDeployment '../../../main.bicep' = [
         sku: '22_04-lts-gen2'
         version: 'latest'
       }
-      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [

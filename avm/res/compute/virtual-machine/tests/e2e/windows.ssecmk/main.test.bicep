@@ -68,7 +68,6 @@ module testDeployment '../../../main.bicep' = [
         sku: '2019-datacenter'
         version: 'latest'
       }
-      zone: 0
       nicConfigurations: [
         {
           ipConfigurations: [
