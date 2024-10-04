@@ -31,41 +31,25 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
   for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: contains(ipConfiguration.pipConfiguration, 'name')
-        ? ipConfiguration.pipConfiguration.name
-        : '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
       idleTimeoutInMinutes: ipConfiguration.pipConfiguration.?idleTimeoutInMinutes
       ddosSettings: ipConfiguration.pipConfiguration.?ddosSettings
       dnsSettings: ipConfiguration.pipConfiguration.?dnsSettings
-      publicIPAddressVersion: contains(ipConfiguration.pipConfiguration, 'publicIPAddressVersion')
-        ? ipConfiguration.pipConfiguration.publicIPAddressVersion
-        : 'IPv4'
-      publicIPAllocationMethod: contains(ipConfiguration.pipConfiguration, 'publicIPAllocationMethod')
-        ? ipConfiguration.pipConfiguration.publicIPAllocationMethod
-        : 'Static'
-      publicIpPrefixResourceId: contains(ipConfiguration.pipConfiguration, 'publicIPPrefixResourceId')
-        ? ipConfiguration.pipConfiguration.publicIPPrefixResourceId
-        : ''
-      roleAssignments: contains(ipConfiguration.pipConfiguration, 'roleAssignments')
-        ? ipConfiguration.pipConfiguration.roleAssignments
-        : []
-      skuName: contains(ipConfiguration.pipConfiguration, 'skuName')
-        ? ipConfiguration.pipConfiguration.skuName
-        : 'Standard'
-      skuTier: contains(ipConfiguration.pipConfiguration, 'skuTier')
-        ? ipConfiguration.pipConfiguration.skuTier
-        : 'Regional'
+      publicIPAddressVersion: ipConfiguration.pipConfiguration.?publicIPAddressVersion ?? 'IPv4'
+      publicIPAllocationMethod: ipConfiguration.pipConfiguration.?publicIPAllocationMethod ?? 'Static'
+      publicIpPrefixResourceId: ipConfiguration.pipConfiguration.?publicIPPrefixResourceId ?? ''
+      roleAssignments: ipConfiguration.pipConfiguration.?roleAssignments ?? []
+      skuName: ipConfiguration.pipConfiguration.?skuName ?? 'Standard'
+      skuTier: ipConfiguration.pipConfiguration.?skuTier ?? 'Regional'
       tags: ipConfiguration.?tags ?? tags
-      zones: contains(ipConfiguration.pipConfiguration, 'zones')
-        ? ipConfiguration.pipConfiguration.zones
-        : [
-            1
-            2
-            3
-          ]
+      zones: ipConfiguration.pipConfiguration.?zones ?? [
+        1
+        2
+        3
+      ]
       enableTelemetry: ipConfiguration.?enableTelemetry ?? enableTelemetry
     }
   }
@@ -88,31 +72,17 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
         publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
           ? resourceId(
               'Microsoft.Network/publicIPAddresses',
-              contains(ipConfiguration.pipConfiguration, 'name')
-                ? ipConfiguration.pipConfiguration.name
-                : '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+              ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
             )
           : null
         subnetResourceId: ipConfiguration.subnetResourceId
-        loadBalancerBackendAddressPools: contains(ipConfiguration, 'loadBalancerBackendAddressPools')
-          ? ipConfiguration.loadBalancerBackendAddressPools
-          : null
-        applicationSecurityGroups: contains(ipConfiguration, 'applicationSecurityGroups')
-          ? ipConfiguration.applicationSecurityGroups
-          : null
-        applicationGatewayBackendAddressPools: contains(ipConfiguration, 'applicationGatewayBackendAddressPools')
-          ? ipConfiguration.applicationGatewayBackendAddressPools
-          : null
-        gatewayLoadBalancer: contains(ipConfiguration, 'gatewayLoadBalancer')
-          ? ipConfiguration.gatewayLoadBalancer
-          : null
-        loadBalancerInboundNatRules: contains(ipConfiguration, 'loadBalancerInboundNatRules')
-          ? ipConfiguration.loadBalancerInboundNatRules
-          : null
-        privateIPAddressVersion: contains(ipConfiguration, 'privateIPAddressVersion')
-          ? ipConfiguration.privateIPAddressVersion
-          : null
-        virtualNetworkTaps: contains(ipConfiguration, 'virtualNetworkTaps') ? ipConfiguration.virtualNetworkTaps : null
+        loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools
+        applicationSecurityGroups: ipConfiguration.?applicationSecurityGroups
+        applicationGatewayBackendAddressPools: ipConfiguration.?applicationGatewayBackendAddressPools
+        gatewayLoadBalancer: ipConfiguration.?gatewayLoadBalancer
+        loadBalancerInboundNatRules: ipConfiguration.?loadBalancerInboundNatRules
+        privateIPAddressVersion: ipConfiguration.?privateIPAddressVersion
+        virtualNetworkTaps: ipConfiguration.?virtualNetworkTaps
       }
     ]
     location: location

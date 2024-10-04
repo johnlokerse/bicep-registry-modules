@@ -117,7 +117,7 @@ param galleryApplications array = []
   2
   3
 ])
-param zone int[]?
+param zone string[]?
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -477,21 +477,15 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
     params: {
-      networkInterfaceName: contains(nicConfiguration, 'name')
-        ? nicConfiguration.name
-        : '${name}${nicConfiguration.nicSuffix}'
+      networkInterfaceName: nicConfiguration.?name ?? '${name}${nicConfiguration.nicSuffix}'
       virtualMachineName: name
       location: location
-      enableIPForwarding: contains(nicConfiguration, 'enableIPForwarding') ? nicConfiguration.enableIPForwarding : false
-      enableAcceleratedNetworking: contains(nicConfiguration, 'enableAcceleratedNetworking')
-        ? nicConfiguration.enableAcceleratedNetworking
-        : true
+      enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
+      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
       dnsServers: contains(nicConfiguration, 'dnsServers')
         ? (!empty(nicConfiguration.dnsServers) ? nicConfiguration.dnsServers : [])
         : []
-      networkSecurityGroupResourceId: contains(nicConfiguration, 'networkSecurityGroupResourceId')
-        ? nicConfiguration.networkSecurityGroupResourceId
-        : ''
+      networkSecurityGroupResourceId: nicConfiguration.?networkSecurityGroupResourceId ?? ''
       ipConfigurations: nicConfiguration.ipConfigurations
       lock: nicConfiguration.?lock ?? lock
       tags: nicConfiguration.?tags ?? tags
