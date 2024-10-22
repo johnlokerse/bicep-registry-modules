@@ -112,7 +112,7 @@ param availabilitySetResourceId string = ''
 param galleryApplications array = []
 
 @description('Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If not set, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
-param zone int[]?
+param zone int[]
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -303,7 +303,7 @@ var publicKeysFormatted = [
   }
 ]
 
-var zonesFormatted = map(zone ?? [], value => string(value))
+var zonesFormatted = map(zone, value => string(value))
 
 var linuxConfiguration = {
   disablePasswordAuthentication: disablePasswordAuthentication

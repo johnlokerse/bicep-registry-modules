@@ -59,6 +59,9 @@ module testDeployment '../../../main.bicep' = [
       }
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
+      zone: [
+        2
+      ]
       adminUsername: 'localAdminUser'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'

@@ -99,6 +99,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+    ]
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
@@ -175,6 +178,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        1
+      ]
+    },
     // Non-required parameters
     "configurationProfile": {
       "value": "/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction"
@@ -243,6 +251,9 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+]
 // Non-required parameters
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
 param disablePasswordAuthentication = true
@@ -303,6 +314,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+    ]
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
@@ -374,6 +388,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        1
+      ]
+    },
     // Non-required parameters
     "disablePasswordAuthentication": {
       "value": true
@@ -435,6 +454,9 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+]
 // Non-required parameters
 param disablePasswordAuthentication = true
 param location = '<location>'
@@ -577,6 +599,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Linux'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+    ]
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
@@ -732,9 +757,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zone: [
-      1
-    ]
   }
 }
 ```
@@ -879,6 +901,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": [
+        1
+      ]
     },
     // Non-required parameters
     "backupPolicyName": {
@@ -1082,11 +1109,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zone": {
-      "value": [
-        1
-      ]
     }
   }
 }
@@ -1217,6 +1239,9 @@ param osDisk = {
 }
 param osType = 'Linux'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+]
 // Non-required parameters
 param backupPolicyName = '<backupPolicyName>'
 param backupVaultName = '<backupVaultName>'
@@ -1372,9 +1397,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zone = [
-  1
-]
 ```
 
 </details>
@@ -1485,6 +1507,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+      2
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1655,10 +1681,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zone: [
-      1
-      2
-    ]
   }
 }
 ```
@@ -1780,6 +1802,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": [
+        1,
+        2
+      ]
     },
     // Non-required parameters
     "adminPassword": {
@@ -2002,12 +2030,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zone": {
-      "value": [
-        1,
-        2
-      ]
     }
   }
 }
@@ -2115,6 +2137,10 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+  2
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param backupPolicyName = '<backupPolicyName>'
@@ -2285,10 +2311,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zone = [
-  1
-  2
-]
 ```
 
 </details>
@@ -2336,6 +2358,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      3
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -2398,6 +2423,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        3
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -2448,6 +2478,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  3
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -2502,6 +2535,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      2
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -2597,6 +2633,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        2
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -2686,6 +2727,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  2
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionGuestConfigurationExtension = {
@@ -2765,6 +2809,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -2850,6 +2897,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        1
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -2929,6 +2981,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionAadJoinConfig = {
@@ -3084,6 +3139,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      2
+      3
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     autoShutdownConfig: {
@@ -3268,10 +3327,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    zone: [
-      2
-      3
-    ]
   }
 }
 ```
@@ -3412,6 +3467,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "vmSize": {
       "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": [
+        2,
+        3
+      ]
     },
     // Non-required parameters
     "adminPassword": {
@@ -3648,12 +3709,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "zone": {
-      "value": [
-        2,
-        3
-      ]
     }
   }
 }
@@ -3780,6 +3835,10 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  2
+  3
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param autoShutdownConfig = {
@@ -3964,10 +4023,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param zone = [
-  2
-  3
-]
 ```
 
 </details>
@@ -4015,6 +4070,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_NV6ads_A10_v5'
+    zone: [
+      1
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionNvidiaGpuDriverWindows: {
@@ -4080,6 +4138,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_NV6ads_A10_v5"
     },
+    "zone": {
+      "value": [
+        1
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4135,6 +4198,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_NV6ads_A10_v5'
+param zone = [
+  1
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param extensionNvidiaGpuDriverWindows = {
@@ -4190,6 +4256,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      1
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -4265,6 +4334,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        1
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4330,6 +4404,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  1
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param dataDisks = [
@@ -4391,6 +4468,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
+    zone: [
+      3
+    ]
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -4454,6 +4534,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "vmSize": {
       "value": "Standard_D2s_v3"
     },
+    "zone": {
+      "value": [
+        3
+      ]
+    },
     // Non-required parameters
     "adminPassword": {
       "value": "<adminPassword>"
@@ -4507,6 +4592,9 @@ param osDisk = {
 }
 param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
+param zone = [
+  3
+]
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param location = '<location>'
@@ -5691,7 +5779,7 @@ Specifies the Windows Remote Management listeners. This enables remote Windows P
 
 If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If not set, then availability zones is not used. Cannot be used in combination with availability set nor scale set.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 ### Parameter: `baseTime`

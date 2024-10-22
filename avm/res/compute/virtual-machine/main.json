@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "9109955532408022995"
+      "templateHash": "10949381856765673446"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -540,7 +540,6 @@
       "items": {
         "type": "int"
       },
-      "nullable": true,
       "metadata": {
         "description": "Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If not set, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
       }
@@ -904,7 +903,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "zonesFormatted": "[map(coalesce(parameters('zone'), createArray()), lambda('value', string(lambdaVariables('value'))))]",
+    "zonesFormatted": "[map(parameters('zone'), lambda('value', string(lambdaVariables('value'))))]",
     "linuxConfiguration": {
       "disablePasswordAuthentication": "[parameters('disablePasswordAuthentication')]",
       "ssh": {

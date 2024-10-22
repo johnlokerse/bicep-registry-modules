@@ -61,6 +61,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
+      zone: [
+        1
+      ]
       adminUsername: 'localAdminUser'
       imageReference: {
         publisher: 'Canonical'

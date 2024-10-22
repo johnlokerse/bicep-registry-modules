@@ -40,6 +40,11 @@ function Get-IsParameterRequired {
     $isUserDefinedType = $Parameter.Keys -contains '$ref'
     $isUserDefinedTypeNullable = $Parameter.Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $Parameter.'$ref' -Leaf)]['nullable'] : $false
 
+    Write-Host $hasParameterNoDefault
+    Write-Host $isParameterNullable
+
+    Write-Host ($hasParameterNoDefault -and -not $isParameterNullable)
+
     # Evaluation
     # The parameter is required IF it
     # - has no default value,
