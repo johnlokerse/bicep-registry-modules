@@ -5693,14 +5693,6 @@ If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that valu
 
 - Required: No
 - Type: array
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `baseTime`
 

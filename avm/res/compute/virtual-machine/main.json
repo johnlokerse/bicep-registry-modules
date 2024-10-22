@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "17525222394884806370"
+      "templateHash": "9109955532408022995"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -541,11 +541,6 @@
         "type": "int"
       },
       "nullable": true,
-      "allowedValues": [
-        1,
-        2,
-        3
-      ],
       "metadata": {
         "description": "Optional. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If not set, then availability zones is not used. Cannot be used in combination with availability set nor scale set."
       }
