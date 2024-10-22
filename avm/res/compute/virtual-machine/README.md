@@ -19,7 +19,7 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
-| `Microsoft.Compute/virtualMachines` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/virtualMachines) |
+| `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
@@ -98,7 +98,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
@@ -118,7 +119,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -173,7 +174,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "configurationProfile": {
@@ -195,6 +196,65 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
+param name = 'cvmlinatmg'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
+param disablePasswordAuthentication = true
+param location = '<location>'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdminUser/.ssh/authorized_keys'
+  }
+]
 ```
 
 </details>
@@ -244,7 +304,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
@@ -263,7 +324,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -314,7 +375,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "disablePasswordAuthentication": {
@@ -333,6 +394,60 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
+param name = 'cvmlinmin'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        pipConfiguration: {
+          name: 'pip-01'
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param disablePasswordAuthentication = true
+param location = '<location>'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdminUser/.ssh/authorized_keys'
+  }
+]
 ```
 
 </details>
@@ -465,7 +580,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 1
     // Non-required parameters
     backupPolicyName: '<backupPolicyName>'
     backupVaultName: '<backupVaultName>'
@@ -634,7 +750,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -768,7 +884,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "backupPolicyName": {
@@ -986,6 +1102,289 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdministrator'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-focal'
+  publisher: 'Canonical'
+  sku: '<sku>'
+  version: 'latest'
+}
+param name = 'cvmlinmax'
+param nicConfigurations = [
+  {
+    deleteOption: 'Delete'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          roleAssignments: [
+            {
+              name: '696e6067-3ddc-4b71-bf97-9caebeba441a'
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    name: 'nic-test-01'
+    roleAssignments: [
+      {
+        name: 'ff72f58d-a3cf-42fd-9c27-c61906bdddfe'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
+param osDisk = {
+  caching: 'ReadOnly'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+  name: 'osdisk01'
+}
+param osType = 'Linux'
+param vmSize = 'Standard_D2s_v3'
+param zone = 1
+// Non-required parameters
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param computerName = 'linvm1'
+param dataDisks = [
+  {
+    caching: 'ReadWrite'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk01'
+  }
+  {
+    caching: 'ReadWrite'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk02'
+  }
+]
+param disablePasswordAuthentication = true
+param enableAutomaticUpdates = true
+param encryptionAtHost = false
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAzureDiskEncryptionConfig = {
+  enabled: true
+  settings: {
+    EncryptionOperation: 'EnableEncryption'
+    KekVaultResourceId: '<KekVaultResourceId>'
+    KeyEncryptionAlgorithm: 'RSA-OAEP'
+    KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+    KeyVaultResourceId: '<KeyVaultResourceId>'
+    KeyVaultURL: '<KeyVaultURL>'
+    ResizeOSDisk: 'false'
+    VolumeType: 'All'
+  }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionCustomScriptConfig = {
+  enabled: true
+  fileData: [
+    {
+      storageAccountId: '<storageAccountId>'
+      uri: '<uri>'
+    }
+  ]
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
+param extensionDependencyAgentConfig = {
+  enableAMA: true
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionDSCConfig = {
+  enabled: false
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionNetworkWatcherAgentConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param patchMode = 'AutomaticByPlatform'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/localAdministrator/.ssh/authorized_keys'
+  }
+]
+param rebootSetting = 'IfRequired'
+param roleAssignments = [
+  {
+    name: 'eb01de52-d2be-4272-a7b9-13de6c399e27'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
@@ -1090,7 +1489,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
     backupPolicyName: '<backupPolicyName>'
@@ -1274,7 +1674,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1385,7 +1785,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1622,6 +2022,281 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'VMAdmin'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2019-datacenter'
+  version: 'latest'
+}
+param name = 'cvmwinwaf'
+param nicConfigurations = [
+  {
+    deleteOption: 'Delete'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          roleAssignments: [
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Reader'
+            }
+          ]
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param bypassPlatformSafetyChecksOnUserSchedule = true
+param computerName = 'winvm1'
+param dataDisks = [
+  {
+    caching: 'ReadOnly'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+  }
+  {
+    caching: 'ReadOnly'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+  }
+]
+param enableAutomaticUpdates = true
+param encryptionAtHost = false
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAntiMalwareConfig = {
+  enabled: true
+  settings: {
+    AntimalwareEnabled: 'true'
+    Exclusions: {
+      Extensions: '.ext1;.ext2'
+      Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+      Processes: 'excludedproc1.exe;excludedproc2.exe'
+    }
+    RealtimeProtectionEnabled: 'true'
+    ScheduledScanSettings: {
+      day: '7'
+      isEnabled: 'true'
+      scanType: 'Quick'
+      time: '120'
+    }
+  }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAzureDiskEncryptionConfig = {
+  enabled: true
+  settings: {
+    EncryptionOperation: 'EnableEncryption'
+    KekVaultResourceId: '<KekVaultResourceId>'
+    KeyEncryptionAlgorithm: 'RSA-OAEP'
+    KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+    KeyVaultResourceId: '<KeyVaultResourceId>'
+    KeyVaultURL: '<KeyVaultURL>'
+    ResizeOSDisk: 'false'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    VolumeType: 'All'
+  }
+}
+param extensionCustomScriptConfig = {
+  enabled: true
+  fileData: [
+    {
+      storageAccountId: '<storageAccountId>'
+      uri: '<uri>'
+    }
+  ]
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
+param extensionDependencyAgentConfig = {
+  enableAMA: true
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionDSCConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionNetworkWatcherAgentConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param patchMode = 'AutomaticByPlatform'
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 5: _Using only defaults for Windows_
 
 This instance deploys the module with the minimum set of required parameters.
@@ -1663,7 +2338,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -1676,7 +2352,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1724,7 +2400,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1735,6 +2411,51 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinmin'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param location = '<location>'
 ```
 
 </details>
@@ -1767,6 +2488,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
+            pipConfiguration: {
+              publicIpNameSuffix: '-pip-01'
+              zones: []
+            }
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -1781,7 +2506,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionGuestConfigurationExtension: {
@@ -1823,7 +2549,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -1851,6 +2577,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "ipConfigurations": [
             {
               "name": "ipconfig01",
+              "pipConfiguration": {
+                "publicIpNameSuffix": "-pip-01",
+                "zones": []
+              },
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
@@ -1871,7 +2601,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1922,6 +2652,84 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinguest'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIpNameSuffix: '-pip-01'
+          zones: []
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionGuestConfigurationExtension = {
+  enabled: true
+}
+param guestConfiguration = {
+  assignmentType: 'ApplyAndMonitor'
+  configurationParameter: [
+    {
+      name: 'Minimum Password Length;ExpectedValue'
+      value: '16'
+    }
+    {
+      name: 'Minimum Password Length;RemediateValue'
+      value: '16'
+    }
+    {
+      name: 'Maximum Password Age;ExpectedValue'
+      value: '75'
+    }
+    {
+      name: 'Maximum Password Age;RemediateValue'
+      value: '75'
+    }
+  ]
+  name: 'AzureWindowsBaseline'
+  version: '1.*'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
 ### Example 7: _Using a host pool to register the VM_
 
 This instance deploys the module and registers it in a host pool.
@@ -1963,7 +2771,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     extensionAadJoinConfig: {
@@ -1999,7 +2808,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2047,7 +2856,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2086,6 +2895,74 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinhp'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionHostPoolRegistration = {
+  configurationFunction: 'Configuration.ps1\\AddSessionHost'
+  enabled: true
+  hostPoolName: '<hostPoolName>'
+  modulesUrl: '<modulesUrl>'
+  registrationInfoToken: '<registrationInfoToken>'
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
 }
 ```
 
@@ -2160,7 +3037,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
+              publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
                   name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
@@ -2178,11 +3055,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                   principalType: 'ServicePrincipal'
                   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
                 }
-              ]
-              zones: [
-                1
-                2
-                3
               ]
             }
             subnetResourceId: '<subnetResourceId>'
@@ -2220,7 +3092,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
     // Non-required parameters
     adminPassword: '<adminPassword>'
     autoShutdownConfig: {
@@ -2418,7 +3291,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2487,7 +3360,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
-                "publicIpNameSuffix": "-pip-01",
+                "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
                     "name": "e962e7c1-261a-4afd-b5ad-17a640a0b7bc",
@@ -2505,11 +3378,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
                     "principalType": "ServicePrincipal",
                     "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                   }
-                ],
-                "zones": [
-                  1,
-                  2,
-                  3
                 ]
               },
               "subnetResourceId": "<subnetResourceId>"
@@ -2553,7 +3421,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2804,6 +3672,314 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'VMAdmin'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2019-datacenter'
+  version: 'latest'
+}
+param name = 'cvmwinmax'
+param nicConfigurations = [
+  {
+    deleteOption: 'Delete'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    enableIPForwarding: true
+    ipConfigurations: [
+      {
+        applicationSecurityGroups: [
+          {
+            id: '<id>'
+          }
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        loadBalancerBackendAddressPools: [
+          {
+            id: '<id>'
+          }
+        ]
+        name: 'ipconfig01'
+        pipConfiguration: {
+          publicIPAddressResourceId: '<publicIPAddressResourceId>'
+          roleAssignments: [
+            {
+              name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    name: 'nic-test-01'
+    roleAssignments: [
+      {
+        name: '95fc1cc2-05ed-4f5a-a22c-a6ca852df7e7'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+  name: 'osdisk01'
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param autoShutdownConfig = {
+  dailyRecurrenceTime: '19:00'
+  notificationEmail: 'test@contoso.com'
+  notificationLocale: 'en'
+  notificationStatus: 'Enabled'
+  notificationTimeInMinutes: 30
+  status: 'Enabled'
+  timeZone: 'UTC'
+}
+param backupPolicyName = '<backupPolicyName>'
+param backupVaultName = '<backupVaultName>'
+param backupVaultResourceGroup = '<backupVaultResourceGroup>'
+param computerName = 'winvm1'
+param dataDisks = [
+  {
+    caching: 'None'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    lun: 0
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk01'
+  }
+  {
+    caching: 'None'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskSizeGB: 128
+    lun: 1
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'datadisk02'
+  }
+]
+param enableAutomaticUpdates = true
+param encryptionAtHost = false
+param extensionAadJoinConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAntiMalwareConfig = {
+  enabled: true
+  settings: {
+    AntimalwareEnabled: 'true'
+    Exclusions: {
+      Extensions: '.ext1;.ext2'
+      Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+      Processes: 'excludedproc1.exe;excludedproc2.exe'
+    }
+    RealtimeProtectionEnabled: 'true'
+    ScheduledScanSettings: {
+      day: '7'
+      isEnabled: 'true'
+      scanType: 'Quick'
+      time: '120'
+    }
+  }
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionAzureDiskEncryptionConfig = {
+  enabled: true
+  settings: {
+    EncryptionOperation: 'EnableEncryption'
+    KekVaultResourceId: '<KekVaultResourceId>'
+    KeyEncryptionAlgorithm: 'RSA-OAEP'
+    KeyEncryptionKeyURL: '<KeyEncryptionKeyURL>'
+    KeyVaultResourceId: '<KeyVaultResourceId>'
+    KeyVaultURL: '<KeyVaultURL>'
+    ResizeOSDisk: 'false'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    VolumeType: 'All'
+  }
+}
+param extensionCustomScriptConfig = {
+  enabled: true
+  fileData: [
+    {
+      storageAccountId: '<storageAccountId>'
+      uri: '<uri>'
+    }
+  ]
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionCustomScriptProtectedSetting = {
+  commandToExecute: '<commandToExecute>'
+}
+param extensionDependencyAgentConfig = {
+  enableAMA: true
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionDSCConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionMonitoringAgentConfig = {
+  dataCollectionRuleAssociations: [
+    {
+      dataCollectionRuleResourceId: '<dataCollectionRuleResourceId>'
+      name: 'SendMetricsToLAW'
+    }
+  ]
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param extensionNetworkWatcherAgentConfig = {
+  enabled: true
+  tags: {
+    Environment: 'Non-Prod'
+    'hidden-title': 'This is visible in the resource name'
+    Role: 'DeploymentValidation'
+  }
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param patchMode = 'AutomaticByPlatform'
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param rebootSetting = 'IfRequired'
+param roleAssignments = [
+  {
+    name: 'c70e8c48-6945-4607-9695-1098ba5a86ed'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 9: _Deploy a VM with nVidia graphic card_
 
 This instance deploys the module for a VM with dedicated nVidia graphic card.
@@ -2861,7 +4037,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -2930,6 +4106,54 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinnv'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_NV6ads_A10_v5'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param extensionNvidiaGpuDriverWindows = {
+  enabled: true
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ### Example 10: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
@@ -2973,7 +4197,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     dataDisks: [
@@ -2997,7 +4222,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -3047,7 +4272,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3071,6 +4296,64 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'VMAdministrator'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2019-datacenter'
+  version: 'latest'
+}
+param name = 'cvmwincmk'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  diskSizeGB: 128
+  managedDisk: {
+    diskEncryptionSet: {
+      id: '<id>'
+    }
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    diskSizeGB: 128
+    managedDisk: {
+      diskEncryptionSet: {
+        id: '<id>'
+      }
+      storageAccountType: 'Premium_LRS'
+    }
+  }
+]
+param location = '<location>'
 ```
 
 </details>
@@ -3117,7 +4400,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
@@ -3131,7 +4415,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -3179,7 +4463,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3193,6 +4477,52 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinvmss'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 0
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param location = '<location>'
+param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 ```
 
 </details>
@@ -4408,10 +5738,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.2.4` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.4.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
 
 ## Notes
+
+Inside the `nicConfigurations` section and there inside the `ipConfigurations`, a `pipConfiguration` can be defined. For a new puplic IP address, the naming can either be set with the `name` or the `publicIpNameSuffix`. Per default a newly created PIP will have its `zones` parameter set to `[1,2,3]`. You can override it, for example with `[]`. If an existing PIP should be used, only set the `publicIPAddressResourceId`.
 
 ### Automanage considerations
 

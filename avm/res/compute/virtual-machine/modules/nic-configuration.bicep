@@ -27,11 +27,14 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.4.1' = [
-  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration')) {
+module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.6.0' = [
+  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration') && !contains(
+    ipConfiguration.pipConfiguration,
+    'publicIPAddressResourceId'
+  )) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
-      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
+      name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix}'
       diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
       lock: lock
@@ -55,7 +58,7 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
   }
 ]
 
-module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.4.0' = {
   name: '${deployment().name}-NetworkInterface'
   params: {
     name: networkInterfaceName
@@ -70,19 +73,21 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.4' = {
           ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
           : null
         publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
-          ? resourceId(
-              'Microsoft.Network/publicIPAddresses',
-              ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.publicIpNameSuffix}'
-            )
+          ? !contains(ipConfiguration.pipConfiguration, 'publicIPAddressResourceId')
+              ? resourceId(
+                  'Microsoft.Network/publicIPAddresses',
+                  ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix}'
+                )
+              : ipConfiguration.pipConfiguration.publicIPAddressResourceId
           : null
         subnetResourceId: ipConfiguration.subnetResourceId
-        loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools
-        applicationSecurityGroups: ipConfiguration.?applicationSecurityGroups
-        applicationGatewayBackendAddressPools: ipConfiguration.?applicationGatewayBackendAddressPools
-        gatewayLoadBalancer: ipConfiguration.?gatewayLoadBalancer
-        loadBalancerInboundNatRules: ipConfiguration.?loadBalancerInboundNatRules
-        privateIPAddressVersion: ipConfiguration.?privateIPAddressVersion
-        virtualNetworkTaps: ipConfiguration.?virtualNetworkTaps
+        loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools ?? null
+        applicationSecurityGroups: ipConfiguration.?applicationSecurityGroups ?? null
+        applicationGatewayBackendAddressPools: ipConfiguration.?applicationGatewayBackendAddressPools ?? null
+        gatewayLoadBalancer: ipConfiguration.?gatewayLoadBalancer ?? null
+        loadBalancerInboundNatRules: ipConfiguration.?loadBalancerInboundNatRules ?? null
+        privateIPAddressVersion: ipConfiguration.?privateIPAddressVersion ?? null
+        virtualNetworkTaps: ipConfiguration.?virtualNetworkTaps ?? null
       }
     ]
     location: location
