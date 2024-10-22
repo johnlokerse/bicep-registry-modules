@@ -117,7 +117,7 @@ param galleryApplications array = []
   2
   3
 ])
-param zone string[]?
+param zone int[]?
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
@@ -307,6 +307,8 @@ var publicKeysFormatted = [
     keyData: publicKey.keyData
   }
 ]
+
+var zonesFormatted = map(zone ?? [], value => string(value))
 
 var linuxConfiguration = {
   disablePasswordAuthentication: disablePasswordAuthentication
@@ -501,7 +503,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   location: location
   identity: identity
   tags: tags
-  zones: zone
+  zones: zonesFormatted
   plan: !empty(plan) ? plan : null
   properties: {
     hardwareProfile: {
