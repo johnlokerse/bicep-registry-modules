@@ -8,6 +8,8 @@ param location string = resourceGroup().location
 @description('Required. The name of the Managed Identity resource.')
 param managedIdentityName string
 
+param managedIdentityId string?
+
 param storageAccountName string
 param storageAccountSkuName string
 param storageAccountPublicNetworkAccess string
@@ -15,6 +17,7 @@ param storageAccountNetworkAcls object = {
   defaultAction: 'Deny'
   bypass: 'AzureServices'
 }
+param storageAccountId string?
 
 param privateEndpointName string
 param privateEndpointNicName string
@@ -23,11 +26,14 @@ param virtualNetworkName string
 param virtualNetworkAddressPrefixes string[]
 param subnetPrivateEndpoint subnetType
 param subnetContainerInstance subnetType
+param containerSubnetId string?
+
+param filePrivateDnsZoneId string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var combineSubnets = array(union(subnetPrivateEndpoint, subnetContainerInstance))
+var combinedSubnets = array(union(subnetPrivateEndpoint, subnetContainerInstance))
 var roleStorageFileDataPrivilegedContributorId = '69566ab7-960f-475b-8e7c-b3118f30c6bd'
 var privateDnsZoneName = 'privatelink.file.core.windows.net'
 
@@ -50,7 +56,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.2' = {
+module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (empty(managedIdentityId)) {
   name: '${uniqueString(deployment().name, managedIdentityName, location)}-managed-identity-deployment'
   params: {
     name: managedIdentityName
@@ -58,17 +64,17 @@ module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identit
   }
 }
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.5.1' = if (empty(containerSubnetId)) {
   name: '${uniqueString(deployment().name, virtualNetworkName, location)}-virtual-network-deployment'
   params: {
     name: virtualNetworkName
     location: location
     addressPrefixes: virtualNetworkAddressPrefixes
-    subnets: combineSubnets
+    subnets: combinedSubnets
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = if (empty(storageAccountId)) {
   name: '${uniqueString(deployment().name, storageAccountName, location)}-storage-account-deployment'
   params: {
     name: storageAccountName
@@ -76,6 +82,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     skuName: storageAccountSkuName
     publicNetworkAccess: storageAccountPublicNetworkAccess
     networkAcls: storageAccountNetworkAcls
+    privateEndpoints: [
+      {
+        name: privateEndpointName
+        service: 'file'
+        subnetResourceId: first(filter(
+          virtualNetwork.outputs.subnetResourceIds,
+          subnet => contains(subnet, subnetPrivateEndpoint.name)
+        ))
+      }
+    ]
     roleAssignments: [
       {
         principalId: managedIdentity.outputs.principalId
@@ -86,7 +102,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   }
 }
 
-module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.4.3' = {
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.9.0' = {
   name: '${uniqueString(deployment().name, privateEndpointName, location)}-private-endpoint-deployment'
   params: {
     name: privateEndpointName
@@ -110,7 +126,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.4.3' = {
   }
 }
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.1' = {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (empty(filePrivateDnsZoneId)) {
   name: '${uniqueString(deployment().name, privateDnsZoneName, location)}-private-dns-zone-deployment'
   params: {
     name: privateDnsZoneName
@@ -134,6 +150,29 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.3.1' = {
   }
 }
 
+module privateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.0' = {
+  name: '${uniqueString(deployment().name, 'private-deployment-script', location)}-deployment-script-deployment'
+  params: {
+    name: 'my-script-todo'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        managedIdentityId ?? managedIdentity.outputs.resourceId
+      ]
+    }
+    subnetResourceIds: [
+      containerSubnetId ?? first(filter(
+        virtualNetwork.outputs.subnetResourceIds,
+        subnet => contains(subnet, subnetContainerInstance.name)
+      ))
+    ]
+    azPowerShellVersion: '9.0'
+    retentionInterval: 'P1D'
+    scriptContent: 'Write-Host "Hello World!"'
+    storageAccountResourceId: storageAccountId ?? storageAccount.outputs.resourceId
+    kind: 'AzurePowerShell'
+  }
+}
+
 resource resPrivateDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'my-private-deployment-script'
   dependsOn: [
@@ -145,7 +184,7 @@ resource resPrivateDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${resManagedIdentity.id}': {}
+      '${managedIdentityId ?? managedIdentity.outputs.resourceId}': {}
     }
   }
   properties: {
@@ -164,6 +203,8 @@ resource resPrivateDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-
     scriptContent: 'Write-Host "Hello World!"'
   }
 }
+
+// Types
 
 type subnetType = {
   @description('Required. The name of the resource that is unique within a resource group. This name can be used to access the resource.')
