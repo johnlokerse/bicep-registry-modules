@@ -20,6 +20,9 @@ param tags object?
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Disable authentication via access keys.')
+param disableAccessKeyAuthentication bool = false
+
 @description('Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.')
 param enableNonSslPort bool = false
 
@@ -108,6 +111,12 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Array of access policies to create.')
+param accessPolicies accessPolicyType[] = []
+
+@description('Optional. Array of access policy assignments.')
+param accessPolicyAssignments accessPolicyAssignmentType[] = []
+
 var availabilityZones = skuName == 'Premium'
   ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
   : []
@@ -135,7 +144,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'e0f68234-74aa-48ed-b826-c38b57376e17'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -144,6 +153,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -170,6 +190,7 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   tags: tags
   identity: identity
   properties: {
+    disableAccessKeyAuthentication: disableAccessKeyAuthentication
     enableNonSslPort: enableNonSslPort
     minimumTlsVersion: minimumTlsVersion
     publicNetworkAccess: !empty(publicNetworkAccess)
@@ -191,6 +212,31 @@ resource redis 'Microsoft.Cache/redis@2024-03-01' = {
   }
   zones: availabilityZones
 }
+
+resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-04-01-preview' = [
+  for policy in accessPolicies: {
+    name: policy.name
+    parent: redis
+    properties: {
+      permissions: policy.permissions
+    }
+  }
+]
+
+resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-04-01-preview' = [
+  for assignment in accessPolicyAssignments: {
+    name: assignment.objectId
+    parent: redis
+    properties: {
+      objectId: assignment.objectId
+      objectIdAlias: assignment.objectIdAlias
+      accessPolicyName: assignment.accessPolicyName
+    }
+    dependsOn: [
+      redis_accessPolicies
+    ]
+  }
+]
 
 resource redis_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -233,14 +279,10 @@ resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
 ]
 
 resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(redis.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(redis.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -252,7 +294,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -293,8 +335,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1'
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -340,6 +381,17 @@ output systemAssignedMIPrincipalId string = redis.?identity.?principalId ?? ''
 @description('The location the resource was deployed into.')
 output location string = redis.location
 
+@description('The private endpoints of the Redis Cache.')
+output privateEndpoints array = [
+  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
+    name: redis_privateEndpoints[i].outputs.name
+    resourceId: redis_privateEndpoints[i].outputs.resourceId
+    groupId: redis_privateEndpoints[i].outputs.groupId
+    customDnsConfig: redis_privateEndpoints[i].outputs.customDnsConfig
+    networkInterfaceIds: redis_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -376,11 +428,20 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+  @description('Optional. The private DNS zone group to configure for the private endpoint.')
+  privateDnsZoneGroup: {
+    @description('Optional. The name of the Private DNS Zone Group.')
+    name: string?
 
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
+    privateDnsZoneGroupConfigs: {
+      @description('Optional. The name of the private DNS zone group config.')
+      name: string?
+
+      @description('Required. The resource id of the private DNS zone.')
+      privateDnsZoneResourceId: string
+    }[]
+  }?
 
   @description('Optional. If Manual Private Link Connection is required.')
   isManualConnection: bool?
@@ -391,7 +452,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')
@@ -439,6 +500,9 @@ type privateEndpointType = {
 }[]?
 
 type roleAssignmentType = {
+  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
+  name: string?
+
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
@@ -504,3 +568,19 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type accessPolicyType = {
+  @description('Required. Name of the access policy.')
+  name: string
+  @description('Required. Permissions associated with the access policy.')
+  permissions: string
+}
+
+type accessPolicyAssignmentType = {
+  @description('Required. Object id to which the access policy will be assigned.')
+  objectId: string
+  @description('Required. Alias for the target object id.')
+  objectIdAlias: string
+  @description('Required. Name of the access policy to be assigned.')
+  accessPolicyName: string
+}

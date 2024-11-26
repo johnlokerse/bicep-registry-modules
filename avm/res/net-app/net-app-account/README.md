@@ -8,7 +8,6 @@ This module deploys an Azure NetApp File.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,9 +16,13 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2023-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
 
@@ -60,7 +63,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +80,22 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaamin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -112,6 +131,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -141,6 +161,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -186,11 +207,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     }
     roleAssignments: [
       {
+        name: '18051111-2a33-4f8e-8b24-441aac1e6562'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -219,7 +242,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -246,6 +269,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -275,6 +299,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -326,11 +351,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "18051111-2a33-4f8e-8b24-441aac1e6562",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -354,6 +381,137 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaamax001'
+// Non-required parameters
+param capacityPools = [
+  {
+    name: 'nanaamax-cp-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: [
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: false
+            nfsv41: true
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaamax-vol-001'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv4.1'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: false
+            nfsv41: true
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaamax-vol-002'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv4.1'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+    ]
+  }
+  {
+    name: 'nanaamax-cp-002'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: []
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '18051111-2a33-4f8e-8b24-441aac1e6562'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Contact: 'test.user@testcompany.com'
+  CostCenter: '7890'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  PurchaseOrder: '1234'
+  Role: 'DeploymentValidation'
+  ServiceName: 'DeploymentValidation'
 }
 ```
 
@@ -390,6 +548,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            encryptionKeySource: '<encryptionKeySource>'
             exportPolicyRules: [
               {
                 allowedClients: '0.0.0.0/0'
@@ -419,6 +578,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
           }
           {
+            encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
             protocolTypes: [
@@ -486,7 +646,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -513,6 +673,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicyRules": [
                 {
                   "allowedClients": "0.0.0.0/0",
@@ -542,6 +703,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ]
             },
             {
+              "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
               "protocolTypes": [
@@ -616,6 +778,124 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaanfs3001'
+// Non-required parameters
+param capacityPools = [
+  {
+    name: 'nanaanfs3-cp-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: [
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        exportPolicyRules: [
+          {
+            allowedClients: '0.0.0.0/0'
+            nfsv3: true
+            nfsv41: false
+            ruleIndex: 1
+            unixReadOnly: false
+            unixReadWrite: true
+          }
+        ]
+        name: 'nanaanfs3-vol-001'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+      {
+        encryptionKeySource: '<encryptionKeySource>'
+        name: 'nanaanfs3-vol-002'
+        networkFeatures: 'Standard'
+        protocolTypes: [
+          'NFSv3'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        usageThreshold: 107374182400
+        zones: [
+          '1'
+        ]
+      }
+    ]
+  }
+  {
+    name: 'nanaanfs3-cp-002'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    serviceLevel: 'Premium'
+    size: 4398046511104
+    volumes: []
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Contact: 'test.user@testcompany.com'
+  CostCenter: '7890'
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  PurchaseOrder: '1234'
+  Role: 'DeploymentValidation'
+  ServiceName: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -645,7 +925,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -672,6 +952,24 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/net-app/net-app-account:<version>'
+
+// Required parameters
+param name = 'nanaawaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  service: 'netapp'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -685,6 +983,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -694,11 +993,15 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 | [`domainJoinUser`](#parameter-domainjoinuser) | string | Required if domainName is specified. Username of Active Directory domain administrator, with permissions to create SMB server machine account in the AD domain. |
 | [`domainName`](#parameter-domainname) | string | Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com'). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`encryptDCConnections`](#parameter-encryptdcconnections) | bool | Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only. |
+| [`kdcIP`](#parameter-kdcip) | string | Kerberos Key Distribution Center (KDC) as part of Kerberos Realm used for Kerberos authentication. |
+| [`ldapOverTLS`](#parameter-ldapovertls) | bool | Specifies whether to use TLS when NFS (with/without Kerberos) and SMB volumes communicate with an LDAP server. A server root CA certificate must be uploaded if enabled (serverRootCACertificate). |
 | [`ldapSigning`](#parameter-ldapsigning) | bool | Specifies whether or not the LDAP traffic needs to be signed. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`serverRootCACertificate`](#parameter-serverrootcacertificate) | string | A server Root certificate is required of ldapOverTLS is enabled. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
 
@@ -708,6 +1011,14 @@ The name of the NetApp account.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `adName`
+
+Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `aesEncryption`
 
@@ -822,6 +1133,30 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `encryptDCConnections`
+
+Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `kdcIP`
+
+Kerberos Key Distribution Center (KDC) as part of Kerberos Realm used for Kerberos authentication.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `ldapOverTLS`
+
+Specifies whether to use TLS when NFS (with/without Kerberos) and SMB volumes communicate with an LDAP server. A server root CA certificate must be uploaded if enabled (serverRootCACertificate).
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `ldapSigning`
 
 Specifies whether or not the LDAP traffic needs to be signed.
@@ -891,7 +1226,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `roleAssignments`
@@ -900,6 +1235,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -916,6 +1257,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -966,6 +1308,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -983,6 +1332,14 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `serverRootCACertificate`
+
+A server Root certificate is required of ldapOverTLS is enabled.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `smbServerNamePrefix`
 
 Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes.
@@ -998,7 +1355,6 @@ Tags for all resources.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1007,10 +1363,7 @@ Tags for all resources.
 | `name` | string | The name of the NetApp account. |
 | `resourceGroupName` | string | The name of the Resource Group the NetApp account was created in. |
 | `resourceId` | string | The Resource ID of the NetApp account. |
-
-## Cross-referenced modules
-
-_None_
+| `volumeResourceId` | string | The resource IDs of the volume created in the capacity pool. |
 
 ## Data Collection
 
