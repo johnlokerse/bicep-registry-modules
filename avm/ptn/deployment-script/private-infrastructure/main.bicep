@@ -5,47 +5,32 @@ metadata owner = 'Azure/module-maintainers'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Conditional. The name of the Managed Identity resource.')
+@description('Required. The name of the Managed Identity resource.')
 param managedIdentityName string
 
-@description('Conditional. Use this parameter when you want to refer to an existing managed identity. The ID of the managed identity.')
-param managedIdentityId string?
+@description('Required. The name of the storage account.')
+param storageAccountName string
 
-@description('Conditional. Use this parameter when you want a new storage account. The name of the storage account.')
-param storageAccountName string?
+@description('Required. The SKU of the storage account.')
+param storageAccountSkuName string
 
-@description('Conditional. Use this parameter when you want a new storage account. The SKU of the storage account.')
-param storageAccountSkuName string?
+@description('Required. The name of the private endpoint')
+param privateEndpointName string
 
-@description('Conditional. Use this parameter when you want to refer to an existing storage account. The ID of the storage account.')
-param storageAccountId string?
+@description('Required. The NIC name of the private endpoint.')
+param privateEndpointNicName string
 
-@description('Conditional. Use this parameter when you want a new storage account. The name of the private endpoint')
-param privateEndpointName string?
+@description('Required. The name of the virtual network.')
+param virtualNetworkName string
 
-@description('Conditional. Use this parameter when you want a new storage account. The NIC name of the private endpoint.')
-param privateEndpointNicName string?
+@description('Required. The address prefixes of the virtual network.')
+param virtualNetworkAddressPrefixes string[]
 
-@description('Conditional. Use this parameter when you want a new virtual network. The name of the virtual network.')
-param virtualNetworkName string?
+@description('Required. The private endpoint subnet configuration of the virtual network.')
+param subnetPrivateEndpoint subnetType
 
-@description('Conditional. Use this parameter when you want a new virtual network. The address prefixes of the virtual network.')
-param virtualNetworkAddressPrefixes string[]?
-
-@description('Conditional. Use this parameter when you want a new virtual network. The private endpoint subnet configuration of the virtual network.')
-param subnetPrivateEndpoint subnetType?
-
-@description('Conditional. Use this parameter when you want a new virtual network. The container subnet configuration of the virtual network.')
-param subnetContainerInstance subnetType?
-
-@description('Conditional. Use this parameter when you want to refer to an existing subnet. The ID of the subnet for the container instance.')
-param containerSubnetId string?
-
-@description('Conditional. Use this parameter when you want to refer to an existing subnet. The ID of the subnet for the private endpoint.')
-param privateEndpointSubnetId string?
-
-@description('Conditional. Use this parameter when you want to refer to an existing file DNS zone. The ID of the file DNS zone.')
-param filePrivateDnsZoneId string?
+@description('Required. The container subnet configuration of the virtual network.')
+param subnetContainerInstance subnetType
 
 @description('Required. The private deployment script configuration.')
 param deploymentScriptConfiguration privateDeploymentScriptType[]
@@ -76,7 +61,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (empty(managedIdentityId)) {
+module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: '${uniqueString(deployment().name, managedIdentityName, location)}-managed-identity-deployment'
   params: {
     name: managedIdentityName
@@ -84,7 +69,7 @@ module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identit
   }
 }
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.5.1' = if (empty(containerSubnetId)) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.5.1' = {
   name: '${uniqueString(deployment().name, virtualNetworkName!, location)}-virtual-network-deployment'
   params: {
     name: virtualNetworkName!
@@ -94,7 +79,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.5.1' = if (em
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = if (empty(storageAccountId)) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = {
   name: '${uniqueString(deployment().name, storageAccountName!, location)}-storage-account-deployment'
   params: {
     name: storageAccountName!
@@ -111,7 +96,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = if (e
         location: location
         customNetworkInterfaceName: privateEndpointNicName ?? '${storageAccountName}-nic'
         service: 'file'
-        subnetResourceId: privateEndpointSubnetId ?? first(filter(
+        subnetResourceId: first(filter(
           virtualNetwork.outputs.subnetResourceIds,
           subnet => contains(subnet, subnetPrivateEndpoint!.name)
         ))
@@ -127,7 +112,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = if (e
   }
 }
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (empty(filePrivateDnsZoneId)) {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
   name: '${uniqueString(deployment().name, privateDnsZoneName, location)}-private-dns-zone-deployment'
   params: {
     name: privateDnsZoneName
@@ -158,11 +143,11 @@ module privateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.
       name: deploymentScript.name
       managedIdentities: {
         userAssignedResourceIds: [
-          managedIdentityId ?? managedIdentity.outputs.resourceId
+          managedIdentity.outputs.resourceId
         ]
       }
       subnetResourceIds: [
-        containerSubnetId ?? first(filter(
+        first(filter(
           virtualNetwork.outputs.subnetResourceIds,
           subnet => contains(subnet, subnetContainerInstance!.name)
         ))
@@ -171,7 +156,7 @@ module privateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.
       retentionInterval: deploymentScript.retentionInterval
       scriptContent: deploymentScript.scriptContent
       environmentVariables: deploymentScript.environmentVariables
-      storageAccountResourceId: storageAccountId ?? storageAccount.outputs.resourceId
+      storageAccountResourceId: storageAccount.outputs.resourceId
       kind: deploymentScript.kind
       cleanupPreference: deploymentScript.cleanupPreference
       azCliVersion: deploymentScript.azCliVersion
@@ -180,6 +165,8 @@ module privateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.
 ]
 
 // Types
+
+@sealed()
 type subnetType = {
   @description('Required. The name of the resource that is unique within a resource group. This name can be used to access the resource.')
   name: string
@@ -200,6 +187,7 @@ type subnetType = {
   }[]?
 }
 
+@sealed()
 @discriminator('kind')
 type privateDeploymentScriptType = azurePowerShellConfigType | azureCliConfigType
 
@@ -257,6 +245,7 @@ type azureCliConfigType = {
   environmentVariables: environmentVariableType[]?
 }
 
+@sealed()
 type environmentVariableType = {
   @description('Required. The name of the environment variable.')
   name: string
