@@ -645,6 +645,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     scaleSetFaultDomain: 1
+    securityType: 'TrustedLaunch'
     skuCapacity: 1
     tags: {
       Environment: 'Non-Prod'
@@ -883,6 +884,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     "scaleSetFaultDomain": {
       "value": 1
     },
+    "securityType": {
+      "value": "TrustedLaunch"
+    },
     "skuCapacity": {
       "value": 1
     },
@@ -1077,6 +1081,7 @@ param roleAssignments = [
   }
 ]
 param scaleSetFaultDomain = 1
+param securityType = 'TrustedLaunch'
 param skuCapacity = 1
 param tags = {
   Environment: 'Non-Prod'
@@ -1593,8 +1598,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         caching: 'ReadOnly'
         createOption: 'Empty'
         deleteOption: 'Delete'
-        diskIOPSReadWrite: 256
-        diskMBpsReadWrite: 256
         diskSizeGB: 256
         lun: 1
         managedDisk: {
@@ -1713,6 +1716,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    securityType: 'TrustedLaunch'
     skuCapacity: 1
     tags: {
       Environment: 'Non-Prod'
@@ -1798,8 +1802,6 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
           "caching": "ReadOnly",
           "createOption": "Empty",
           "deleteOption": "Delete",
-          "diskIOPSReadWrite": 256,
-          "diskMBpsReadWrite": 256,
           "diskSizeGB": 256,
           "lun": 1,
           "managedDisk": {
@@ -1947,6 +1949,9 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         }
       ]
     },
+    "securityType": {
+      "value": "TrustedLaunch"
+    },
     "skuCapacity": {
       "value": 1
     },
@@ -2023,8 +2028,6 @@ param dataDisks = [
     caching: 'ReadOnly'
     createOption: 'Empty'
     deleteOption: 'Delete'
-    diskIOPSReadWrite: 256
-    diskMBpsReadWrite: 256
     diskSizeGB: 256
     lun: 1
     managedDisk: {
@@ -2143,6 +2146,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param securityType = 'TrustedLaunch'
 param skuCapacity = 1
 param tags = {
   Environment: 'Non-Prod'
@@ -3014,7 +3018,6 @@ Specifies the security profile for the managed disk.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`securityEncryptionType`](#parameter-osdiskmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the security encryption type for the managed disk. |
 
 ### Parameter: `osDisk.managedDisk.securityProfile.diskEncryptionSetResourceId`
 
@@ -3022,21 +3025,6 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 - Required: No
 - Type: string
-
-### Parameter: `osDisk.managedDisk.securityProfile.securityEncryptionType`
-
-Specifies the security encryption type for the managed disk.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DiskWithVMGuestState'
-    'NonPersistedTPM'
-    'VMGuestStateOnly'
-  ]
-  ```
 
 ### Parameter: `osDisk.managedDisk.storageAccountType`
 
@@ -3313,8 +3301,6 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk. |
 | [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machines in the scale set should be created. |
 | [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk. |
-| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk. |
-| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk. |
 | [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk. |
 | [`name`](#parameter-datadisksname) | string | The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used. |
 | [`writeAcceleratorEnabled`](#parameter-datadiskswriteacceleratorenabled) | bool | Specifies whether writeAccelerator should be enabled or disabled on the disk. |
@@ -3360,7 +3346,6 @@ Specifies the security profile for the managed disk.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`securityEncryptionType`](#parameter-datadisksmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the security encryption type for the managed disk. |
 
 ### Parameter: `dataDisks.managedDisk.securityProfile.diskEncryptionSetResourceId`
 
@@ -3368,21 +3353,6 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 - Required: No
 - Type: string
-
-### Parameter: `dataDisks.managedDisk.securityProfile.securityEncryptionType`
-
-Specifies the security encryption type for the managed disk.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'DiskWithVMGuestState'
-    'NonPersistedTPM'
-    'VMGuestStateOnly'
-  ]
-  ```
 
 ### Parameter: `dataDisks.managedDisk.storageAccountType`
 
@@ -3448,20 +3418,6 @@ Specifies whether data disk should be deleted or detached upon VM deletion. This
     'Detach'
   ]
   ```
-
-### Parameter: `dataDisks.diskIOPSReadWrite`
-
-The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.
-
-- Required: No
-- Type: int
-
-### Parameter: `dataDisks.diskMBpsReadWrite`
-
-The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.
-
-- Required: No
-- Type: int
 
 ### Parameter: `dataDisks.diskSizeGB`
 

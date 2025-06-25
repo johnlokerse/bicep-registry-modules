@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17600854330803218636"
+      "templateHash": "8784686799371504307"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -124,18 +124,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
-                  }
-                },
-                "securityEncryptionType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "DiskWithVMGuestState",
-                    "NonPersistedTPM",
-                    "VMGuestStateOnly"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the security encryption type for the managed disk."
                   }
                 }
               },
@@ -259,20 +247,6 @@
             "description": "Optional. Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk."
           }
         },
-        "diskIOPSReadWrite": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk."
-          }
-        },
-        "diskMBpsReadWrite": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk."
-          }
-        },
         "managedDisk": {
           "type": "object",
           "properties": {
@@ -307,18 +281,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
-                  }
-                },
-                "securityEncryptionType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "DiskWithVMGuestState",
-                    "NonPersistedTPM",
-                    "VMGuestStateOnly"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies the security encryption type for the managed disk."
                   }
                 }
               },
@@ -1347,7 +1309,7 @@
                 "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
                 "input": {
                   "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
-                  "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), add(copyIndex('dataDisks'), 1)))]",
+                  "name": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name')]",
                   "diskSizeGB": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskSizeGB')]",
                   "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createOption'), 'Empty')]",
                   "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
@@ -1355,13 +1317,8 @@
                   "managedDisk": {
                     "storageAccountType": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'storageAccountType')]",
                     "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')), null())]",
-                    "securityProfile": {
-                      "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskEncryptionSet'), createObject('id', tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null())]",
-                      "securityEncryptionType": "[tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'securityProfile'), 'securityEncryptionType')]"
-                    }
-                  },
-                  "diskIOPSReadWrite": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskIOPSReadWrite'), null())]",
-                  "diskMBpsReadWrite": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskMBpsReadWrite'), null())]"
+                    "securityProfile": "[if(not(empty(parameters('securityType'))), createObject('diskEncryptionSet', if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskEncryptionSet'), createObject('id', tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null()), 'securityEncryptionType', parameters('securityType')), null())]"
+                  }
                 }
               }
             ],
@@ -1379,10 +1336,7 @@
               "managedDisk": {
                 "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
                 "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')), null())]",
-                "securityProfile": {
-                  "diskEncryptionSet": "[if(contains(parameters('osDisk'), 'diskEncryptionSet'), createObject('id', tryGet(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null())]",
-                  "securityEncryptionType": "[tryGet(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), 'securityEncryptionType')]"
-                }
+                "securityProfile": "[if(not(empty(parameters('securityType'))), createObject('diskEncryptionSet', if(contains(parameters('osDisk'), 'diskEncryptionSet'), createObject('id', tryGet(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null()), 'securityEncryptionType', parameters('securityType')), null())]"
               }
             }
           },

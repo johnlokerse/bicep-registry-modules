@@ -618,8 +618,6 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
                   }
                 : null
             }
-            diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite ?? null
-            diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite ?? null
           }
         ]
       }
@@ -956,9 +954,6 @@ type osDiskType = {
     securityProfile: {
       @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
       diskEncryptionSetResourceId: string?
-
-      @description('Optional. Specifies the security encryption type for the managed disk.')
-      securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
     }?
   }
 
@@ -998,12 +993,6 @@ type dataDiskType = {
 
   @description('Optional. Specifies the caching requirements. This property is automatically set to \'None\' when attaching a pre-existing disk.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
-
-  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.')
-  diskIOPSReadWrite: int?
-
-  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
-  diskMBpsReadWrite: int?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {

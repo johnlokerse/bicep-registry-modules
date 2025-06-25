@@ -89,6 +89,7 @@ module testDeployment '../../../main.bicep' = [
           storageAccountType: 'Premium_LRS'
         }
       }
+      securityType: 'TrustedLaunch'
       dataDisks: [
         {
           lun: 1
@@ -99,8 +100,6 @@ module testDeployment '../../../main.bicep' = [
             storageAccountType: 'Premium_LRS'
           }
           deleteOption: 'Delete'
-          diskIOPSReadWrite: 256
-          diskMBpsReadWrite: 256
           name: 'myCustomDataDiskName'
           writeAcceleratorEnabled: false
         }

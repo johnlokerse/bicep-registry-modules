@@ -92,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
           storageAccountType: 'Premium_LRS'
         }
       }
+      securityType: 'TrustedLaunch'
       osType: 'Linux'
       skuName: 'Standard_B12ms'
       availabilityZones: [
