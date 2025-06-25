@@ -564,7 +564,6 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
       storageProfile: {
         imageReference: imageReference
         osDisk: {
-          name: osDisk.?name ?? '${name}-disk-os-01'
           createOption: osDisk.?createOption ?? 'FromImage'
           deleteOption: osDisk.?deleteOption ?? 'Delete'
           diskSizeGB: osDisk.?diskSizeGB
@@ -913,9 +912,6 @@ output location string = vmss.location
 @export()
 @description('The type describing an OS disk.')
 type osDiskType = {
-  @description('Optional. The disk name.')
-  name: string?
-
   @description('Optional. Specifies the size of an empty data disk in gigabytes.')
   diskSizeGB: int?
 
