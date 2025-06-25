@@ -593,21 +593,30 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
         }
         dataDisks: [
           for (dataDisk, index) in dataDisks: {
-            lun: index
-            diskSizeGB: dataDisk.diskSizeGB
-            createOption: dataDisk.createOption
-            caching: dataDisk.caching
+            lun: dataDisk.?lun ?? index
+            name: dataDisk.?name ?? '${name}-disk-data-${index + 1}'
+            diskSizeGB: dataDisk.?diskSizeGB
+            createOption: dataDisk.?createOption ?? 'Empty'
+            caching: dataDisk.?caching ?? 'ReadOnly'
             writeAcceleratorEnabled: osDisk.?writeAcceleratorEnabled
             managedDisk: {
-              storageAccountType: dataDisk.managedDisk.storageAccountType
+              storageAccountType: dataDisk.managedDisk.?storageAccountType
               diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
                 ? {
-                    id: dataDisk.managedDisk.diskEncryptionSet.id
+                    id: dataDisk.managedDisk.?diskEncryptionSetResourceId
                   }
                 : null
+              securityProfile: {
+                diskEncryptionSet: contains(dataDisk, 'diskEncryptionSet')
+                  ? {
+                      id: dataDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
+                    }
+                  : null
+                securityEncryptionType: dataDisk.managedDisk.?securityProfile.?securityEncryptionType
+              }
             }
-            diskIOPSReadWrite: contains(osDisk, 'diskIOPSReadWrite') ? dataDisk.diskIOPSReadWrite : null
-            diskMBpsReadWrite: contains(osDisk, 'diskMBpsReadWrite') ? dataDisk.diskMBpsReadWrite : null
+            diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite ?? null
+            diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite ?? null
           }
         ]
       }
