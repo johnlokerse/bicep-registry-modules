@@ -26,10 +26,10 @@ param imageReference object
 param plan object = {}
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.')
-param osDisk object
+param osDisk osDiskType
 
 @description('Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets.')
-param dataDisks array = []
+param dataDisks dataDiskType[] = []
 
 @description('Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled.')
 param ultraSSDEnabled bool = false
@@ -505,7 +505,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
+resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
   name: name
   location: location
   tags: tags
@@ -564,21 +564,31 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
       storageProfile: {
         imageReference: imageReference
         osDisk: {
-          createOption: osDisk.createOption
-          diskSizeGB: osDisk.diskSizeGB
-          caching: osDisk.?caching
+          name: osDisk.?name ?? '${name}-disk-os-01'
+          createOption: osDisk.?createOption ?? 'FromImage'
+          deleteOption: osDisk.?deleteOption ?? 'Delete'
+          diskSizeGB: osDisk.?diskSizeGB
+          caching: osDisk.?caching ?? 'ReadOnly'
           writeAcceleratorEnabled: osDisk.?writeAcceleratorEnabled
           diffDiskSettings: osDisk.?diffDiskSettings
           osType: osDisk.?osType
           image: osDisk.?image
           vhdContainers: osDisk.?vhdContainers
           managedDisk: {
-            storageAccountType: osDisk.managedDisk.storageAccountType
+            storageAccountType: osDisk.managedDisk.?storageAccountType
             diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet')
               ? {
-                  id: osDisk.managedDisk.diskEncryptionSet.id
+                  id: osDisk.managedDisk.?diskEncryptionSetResourceId
                 }
               : null
+            securityProfile: {
+              diskEncryptionSet: contains(osDisk, 'diskEncryptionSet')
+                ? {
+                    id: osDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
+                  }
+                : null
+              securityEncryptionType: osDisk.managedDisk.?securityProfile.?securityEncryptionType
+            }
           }
         }
         dataDisks: [
@@ -889,3 +899,127 @@ output systemAssignedMIPrincipalId string? = vmss.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vmss.location
+
+@export()
+@description('The type describing an OS disk.')
+type osDiskType = {
+  @description('Optional. The disk name.')
+  name: string?
+
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
+
+  @description('Optional. Specifies how the virtual machines in the scale set should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage' | 'Copy' | 'Restore'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
+  diffDiskSettings: {
+    @description('Optional. Specifies the ephemeral disk settings for operating system disk.')
+    option: 'Local'?
+
+    @description('Optional. Specifies the ephemeral disk placement for operating system disk.')
+    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')?
+  }?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Optional. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'?
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the security profile for the managed disk.')
+    securityProfile: {
+      @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+      diskEncryptionSetResourceId: string?
+
+      @description('Optional. Specifies the security encryption type for the managed disk.')
+      securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
+    }
+  }
+
+  @description('Optional. Specifies information about the unmanaged user image to base the scale set on.')
+  image: {
+    @description('Optional. Specifies the virtual hard disk\'s uri.')
+    uri: string?
+  }?
+
+  @description('Optional. This property allows you to specify the type of the OS that is included in the disk if creating a VM from user-image or a specialized VHD.')
+  osType: 'Linux' | 'Windows'?
+
+  @description('Optional. Specifies the container urls that are used to store operating system disks for the scale set.')
+  vhdContainers: string[]?
+
+  @description('Optional. Specifies whether writeAccelerator should be enabled or disabled on the disk.')
+  writeAcceleratorEnabled: bool?
+}
+
+@export()
+@description('The type describing a data disk.')
+type dataDiskType = {
+  @description('Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.')
+  name: string?
+
+  @description('Required. Specifies the logical unit number of the data disk.')
+  lun: int
+
+  @description('Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.')
+  diskSizeGB: int?
+
+  @description('Optional. Specifies how the virtual machines in the scale set should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage' | 'Copy' | 'Restore'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to \'Detach\' when attaching a pre-existing disk.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements. This property is automatically set to \'None\' when attaching a pre-existing disk.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.')
+  diskIOPSReadWrite: int?
+
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
+  diskMBpsReadWrite: int?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Optional. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'?
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the security profile for the managed disk.')
+    securityProfile: {
+      @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+      diskEncryptionSetResourceId: string?
+
+      @description('Optional. Specifies the security encryption type for the managed disk.')
+      securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
+    }
+  }
+
+  @description('Optional. Specifies whether writeAccelerator should be enabled or disabled on the disk.')
+  writeAcceleratorEnabled: bool?
+}
