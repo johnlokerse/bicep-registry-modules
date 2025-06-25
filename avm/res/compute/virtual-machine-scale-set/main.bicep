@@ -580,20 +580,22 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
                   id: osDisk.managedDisk.?diskEncryptionSetResourceId
                 }
               : null
-            securityProfile: {
-              diskEncryptionSet: contains(osDisk, 'diskEncryptionSet')
-                ? {
-                    id: osDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
-                  }
-                : null
-              securityEncryptionType: osDisk.managedDisk.?securityProfile.?securityEncryptionType
-            }
+            securityProfile: !empty(securityType)
+              ? {
+                  diskEncryptionSet: contains(osDisk, 'diskEncryptionSet')
+                    ? {
+                        id: osDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
+                      }
+                    : null
+                  securityEncryptionType: securityType
+                }
+              : null
           }
         }
         dataDisks: [
           for (dataDisk, index) in dataDisks ?? []: {
             lun: dataDisk.?lun ?? index
-            name: dataDisk.?name ?? '${name}-disk-data-${index + 1}'
+            name: dataDisk.?name
             diskSizeGB: dataDisk.?diskSizeGB
             createOption: dataDisk.?createOption ?? 'Empty'
             caching: dataDisk.?caching ?? 'ReadOnly'
@@ -605,14 +607,16 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
                     id: dataDisk.managedDisk.?diskEncryptionSetResourceId
                   }
                 : null
-              securityProfile: {
-                diskEncryptionSet: contains(dataDisk, 'diskEncryptionSet')
-                  ? {
-                      id: dataDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
-                    }
-                  : null
-                securityEncryptionType: dataDisk.managedDisk.?securityProfile.?securityEncryptionType
-              }
+              securityProfile: !empty(securityType)
+                ? {
+                    diskEncryptionSet: contains(dataDisk, 'diskEncryptionSet')
+                      ? {
+                          id: dataDisk.managedDisk.?securityProfile.?diskEncryptionSetResourceId
+                        }
+                      : null
+                    securityEncryptionType: securityType
+                  }
+                : null
             }
             diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite ?? null
             diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite ?? null
@@ -1020,9 +1024,6 @@ type dataDiskType = {
     securityProfile: {
       @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
       diskEncryptionSetResourceId: string?
-
-      @description('Optional. Specifies the security encryption type for the managed disk.')
-      securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
     }?
   }
 
