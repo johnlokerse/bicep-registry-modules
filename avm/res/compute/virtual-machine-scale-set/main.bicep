@@ -592,7 +592,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
           }
         }
         dataDisks: [
-          for (dataDisk, index) in dataDisks: {
+          for (dataDisk, index) in dataDisks ?? []: {
             lun: dataDisk.?lun ?? index
             name: dataDisk.?name ?? '${name}-disk-data-${index + 1}'
             diskSizeGB: dataDisk.?diskSizeGB
