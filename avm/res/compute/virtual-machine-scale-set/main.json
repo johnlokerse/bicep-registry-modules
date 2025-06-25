@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11381275674254560197"
+      "templateHash": "17600854330803218636"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -15,13 +15,6 @@
     "osDiskType": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The disk name."
-          }
-        },
         "diskSizeGB": {
           "type": "int",
           "nullable": true,
@@ -1374,7 +1367,6 @@
             ],
             "imageReference": "[parameters('imageReference')]",
             "osDisk": {
-              "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
               "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
               "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
               "diskSizeGB": "[tryGet(parameters('osDisk'), 'diskSizeGB')]",

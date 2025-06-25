@@ -2976,7 +2976,6 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 | [`diffDiskSettings`](#parameter-osdiskdiffdisksettings) | object | Specifies the ephemeral Disk Settings for the operating system disk. |
 | [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`image`](#parameter-osdiskimage) | object | Specifies information about the unmanaged user image to base the scale set on. |
-| [`name`](#parameter-osdiskname) | string | The disk name. |
 | [`osType`](#parameter-osdiskostype) | string | This property allows you to specify the type of the OS that is included in the disk if creating a VM from user-image or a specialized VHD. |
 | [`vhdContainers`](#parameter-osdiskvhdcontainers) | array | Specifies the container urls that are used to store operating system disks for the scale set. |
 | [`writeAcceleratorEnabled`](#parameter-osdiskwriteacceleratorenabled) | bool | Specifies whether writeAccelerator should be enabled or disabled on the disk. |
@@ -3169,13 +3168,6 @@ Specifies information about the unmanaged user image to base the scale set on.
 ### Parameter: `osDisk.image.uri`
 
 Specifies the virtual hard disk's uri.
-
-- Required: No
-- Type: string
-
-### Parameter: `osDisk.name`
-
-The disk name.
 
 - Required: No
 - Type: string
