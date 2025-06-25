@@ -31,7 +31,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -83,12 +83,28 @@ module testDeployment '../../../main.bicep' = [
         version: 'latest'
       }
       osDisk: {
-        createOption: 'fromImage'
-        diskSizeGB: '128'
+        createOption: 'FromImage'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
       }
+      dataDisks: [
+        {
+          lun: 1
+          caching: 'ReadOnly'
+          createOption: 'Empty'
+          diskSizeGB: 256
+          managedDisk: {
+            storageAccountType: 'Premium_LRS'
+          }
+          deleteOption: 'Delete'
+          diskIOPSReadWrite: 256
+          diskMBpsReadWrite: 256
+          name: 'myCustomDataDiskName'
+          writeAcceleratorEnabled: false
+        }
+      ]
       osType: 'Windows'
       skuName: 'Standard_B12ms'
       adminPassword: password

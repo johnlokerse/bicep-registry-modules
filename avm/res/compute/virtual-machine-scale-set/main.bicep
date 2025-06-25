@@ -720,7 +720,7 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
   ]
 }
 
-resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(monitoringWorkspaceResourceId)) {
+resource vmss_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(monitoringWorkspaceResourceId)) {
   name: last(split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : 'law'), '/'))!
   scope: az.resourceGroup(
     split((!empty(monitoringWorkspaceResourceId) ? monitoringWorkspaceResourceId : '//'), '/')[2],
@@ -856,6 +856,7 @@ resource vmss_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock 
   scope: vmss
 }
 
+#disable-next-line use-recent-api-versions
 resource vmss_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -958,7 +959,7 @@ type osDiskType = {
 
       @description('Optional. Specifies the security encryption type for the managed disk.')
       securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
-    }
+    }?
   }
 
   @description('Optional. Specifies information about the unmanaged user image to base the scale set on.')
@@ -1026,7 +1027,7 @@ type dataDiskType = {
 
       @description('Optional. Specifies the security encryption type for the managed disk.')
       securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'?
-    }
+    }?
   }
 
   @description('Optional. Specifies whether writeAccelerator should be enabled or disabled on the disk.')

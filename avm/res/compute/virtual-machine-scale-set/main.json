@@ -5,13 +5,353 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12100503841715754172"
+      "version": "0.36.1.42791",
+      "templateHash": "11381275674254560197"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
   },
   "definitions": {
+    "osDiskType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The disk name."
+          }
+        },
+        "diskSizeGB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
+          }
+        },
+        "createOption": {
+          "type": "string",
+          "allowedValues": [
+            "Attach",
+            "Copy",
+            "Empty",
+            "FromImage",
+            "Restore"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies how the virtual machines in the scale set should be created."
+          }
+        },
+        "deleteOption": {
+          "type": "string",
+          "allowedValues": [
+            "Delete",
+            "Detach"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion."
+          }
+        },
+        "caching": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "ReadOnly",
+            "ReadWrite"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the caching requirements."
+          }
+        },
+        "diffDiskSettings": {
+          "type": "object",
+          "properties": {
+            "option": {
+              "type": "string",
+              "allowedValues": [
+                "Local"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the ephemeral disk settings for operating system disk."
+              }
+            },
+            "placement": {
+              "type": "string",
+              "allowedValues": [
+                "CacheDisk",
+                "NvmeDisk",
+                "ResourceDisk"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the ephemeral disk placement for operating system disk."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the ephemeral Disk Settings for the operating system disk."
+          }
+        },
+        "managedDisk": {
+          "type": "object",
+          "properties": {
+            "storageAccountType": {
+              "type": "string",
+              "allowedValues": [
+                "PremiumV2_LRS",
+                "Premium_LRS",
+                "Premium_ZRS",
+                "StandardSSD_LRS",
+                "StandardSSD_ZRS",
+                "Standard_LRS",
+                "UltraSSD_LRS"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the storage account type for the managed disk."
+              }
+            },
+            "diskEncryptionSetResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+              }
+            },
+            "securityProfile": {
+              "type": "object",
+              "properties": {
+                "diskEncryptionSetResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+                  }
+                },
+                "securityEncryptionType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DiskWithVMGuestState",
+                    "NonPersistedTPM",
+                    "VMGuestStateOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the security encryption type for the managed disk."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the security profile for the managed disk."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The managed disk parameters."
+          }
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "uri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the virtual hard disk's uri."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies information about the unmanaged user image to base the scale set on."
+          }
+        },
+        "osType": {
+          "type": "string",
+          "allowedValues": [
+            "Linux",
+            "Windows"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property allows you to specify the type of the OS that is included in the disk if creating a VM from user-image or a specialized VHD."
+          }
+        },
+        "vhdContainers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the container urls that are used to store operating system disks for the scale set."
+          }
+        },
+        "writeAcceleratorEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether writeAccelerator should be enabled or disabled on the disk."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing an OS disk."
+      }
+    },
+    "dataDiskType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used."
+          }
+        },
+        "lun": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Specifies the logical unit number of the data disk."
+          }
+        },
+        "diskSizeGB": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk."
+          }
+        },
+        "createOption": {
+          "type": "string",
+          "allowedValues": [
+            "Attach",
+            "Copy",
+            "Empty",
+            "FromImage",
+            "Restore"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies how the virtual machines in the scale set should be created."
+          }
+        },
+        "deleteOption": {
+          "type": "string",
+          "allowedValues": [
+            "Delete",
+            "Detach"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk."
+          }
+        },
+        "caching": {
+          "type": "string",
+          "allowedValues": [
+            "None",
+            "ReadOnly",
+            "ReadWrite"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk."
+          }
+        },
+        "diskIOPSReadWrite": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk."
+          }
+        },
+        "diskMBpsReadWrite": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk."
+          }
+        },
+        "managedDisk": {
+          "type": "object",
+          "properties": {
+            "storageAccountType": {
+              "type": "string",
+              "allowedValues": [
+                "PremiumV2_LRS",
+                "Premium_LRS",
+                "Premium_ZRS",
+                "StandardSSD_LRS",
+                "StandardSSD_ZRS",
+                "Standard_LRS",
+                "UltraSSD_LRS"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the storage account type for the managed disk."
+              }
+            },
+            "diskEncryptionSetResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+              }
+            },
+            "securityProfile": {
+              "type": "object",
+              "properties": {
+                "diskEncryptionSetResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the customer managed disk encryption set resource id for the managed disk."
+                  }
+                },
+                "securityEncryptionType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "DiskWithVMGuestState",
+                    "NonPersistedTPM",
+                    "VMGuestStateOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the security encryption type for the managed disk."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the security profile for the managed disk."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The managed disk parameters."
+          }
+        },
+        "writeAcceleratorEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether writeAccelerator should be enabled or disabled on the disk."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing a data disk."
+      }
+    },
     "diagnosticSettingMetricsOnlyType": {
       "type": "object",
       "properties": {
@@ -291,14 +631,17 @@
       }
     },
     "osDisk": {
-      "type": "object",
+      "$ref": "#/definitions/osDiskType",
       "metadata": {
         "description": "Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets."
       }
     },
     "dataDisks": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/dataDiskType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VM Scale sets."
       }
@@ -968,7 +1311,7 @@
     },
     "vmss": {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1008,35 +1351,46 @@
             "copy": [
               {
                 "name": "dataDisks",
-                "count": "[length(parameters('dataDisks'))]",
+                "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
                 "input": {
-                  "lun": "[copyIndex('dataDisks')]",
-                  "diskSizeGB": "[parameters('dataDisks')[copyIndex('dataDisks')].diskSizeGB]",
-                  "createOption": "[parameters('dataDisks')[copyIndex('dataDisks')].createOption]",
-                  "caching": "[parameters('dataDisks')[copyIndex('dataDisks')].caching]",
+                  "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
+                  "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), add(copyIndex('dataDisks'), 1)))]",
+                  "diskSizeGB": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskSizeGB')]",
+                  "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createOption'), 'Empty')]",
+                  "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                   "writeAcceleratorEnabled": "[tryGet(parameters('osDisk'), 'writeAcceleratorEnabled')]",
                   "managedDisk": {
-                    "storageAccountType": "[parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.storageAccountType]",
-                    "diskEncryptionSet": "[if(contains(parameters('dataDisks')[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', parameters('dataDisks')[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
+                    "storageAccountType": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'storageAccountType')]",
+                    "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')), null())]",
+                    "securityProfile": {
+                      "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskEncryptionSet'), createObject('id', tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null())]",
+                      "securityEncryptionType": "[tryGet(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'securityProfile'), 'securityEncryptionType')]"
+                    }
                   },
-                  "diskIOPSReadWrite": "[if(contains(parameters('osDisk'), 'diskIOPSReadWrite'), parameters('dataDisks')[copyIndex('dataDisks')].diskIOPSReadWrite, null())]",
-                  "diskMBpsReadWrite": "[if(contains(parameters('osDisk'), 'diskMBpsReadWrite'), parameters('dataDisks')[copyIndex('dataDisks')].diskMBpsReadWrite, null())]"
+                  "diskIOPSReadWrite": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskIOPSReadWrite'), null())]",
+                  "diskMBpsReadWrite": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'diskMBpsReadWrite'), null())]"
                 }
               }
             ],
             "imageReference": "[parameters('imageReference')]",
             "osDisk": {
-              "createOption": "[parameters('osDisk').createOption]",
-              "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
-              "caching": "[tryGet(parameters('osDisk'), 'caching')]",
+              "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
+              "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
+              "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
+              "diskSizeGB": "[tryGet(parameters('osDisk'), 'diskSizeGB')]",
+              "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
               "writeAcceleratorEnabled": "[tryGet(parameters('osDisk'), 'writeAcceleratorEnabled')]",
               "diffDiskSettings": "[tryGet(parameters('osDisk'), 'diffDiskSettings')]",
               "osType": "[tryGet(parameters('osDisk'), 'osType')]",
               "image": "[tryGet(parameters('osDisk'), 'image')]",
               "vhdContainers": "[tryGet(parameters('osDisk'), 'vhdContainers')]",
               "managedDisk": {
-                "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
-                "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', parameters('osDisk').managedDisk.diskEncryptionSet.id), null())]"
+                "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
+                "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')), null())]",
+                "securityProfile": {
+                  "diskEncryptionSet": "[if(contains(parameters('osDisk'), 'diskEncryptionSet'), createObject('id', tryGet(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), 'diskEncryptionSetResourceId')), null())]",
+                  "securityEncryptionType": "[tryGet(tryGet(parameters('osDisk').managedDisk, 'securityProfile'), 'securityEncryptionType')]"
+                }
               }
             }
           },
@@ -1074,7 +1428,7 @@
       "condition": "[not(empty(parameters('monitoringWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-06-01",
+      "apiVersion": "2025-02-01",
       "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]]",
       "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))]"
@@ -1194,8 +1548,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1361,8 +1715,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1523,7 +1877,7 @@
           },
           "protectedSettings": {
             "value": {
-              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceResourceId'))), parameters('monitoringWorkspaceResourceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
+              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceResourceId'))), listKeys('vmss_logAnalyticsWorkspace', '2025-02-01').primarySharedKey, '')]"
             }
           }
         },
@@ -1533,8 +1887,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1697,8 +2051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1860,8 +2214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2031,8 +2385,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2206,8 +2560,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2375,8 +2729,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2691883054312794420"
+              "version": "0.36.1.42791",
+              "templateHash": "8061165374859847375"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2530,14 +2884,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('vmss', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('vmss', '2024-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vmss', '2024-07-01', 'full').location]"
+      "value": "[reference('vmss', '2024-11-01', 'full').location]"
     }
   }
 }

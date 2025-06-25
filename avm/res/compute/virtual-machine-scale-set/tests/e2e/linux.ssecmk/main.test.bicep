@@ -34,7 +34,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -96,25 +96,22 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       osDisk: {
-        createOption: 'fromImage'
-        diskSizeGB: '128'
+        createOption: 'FromImage'
+        diskSizeGB: 128
         managedDisk: {
           storageAccountType: 'Premium_LRS'
-          diskEncryptionSet: {
-            id: nestedDependencies.outputs.diskEncryptionSetResourceId
-          }
+          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
         {
+          lun: 1
           caching: 'ReadOnly'
           createOption: 'Empty'
-          diskSizeGB: '128'
+          diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
-            diskEncryptionSet: {
-              id: nestedDependencies.outputs.diskEncryptionSetResourceId
-            }
+            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
         }
       ]

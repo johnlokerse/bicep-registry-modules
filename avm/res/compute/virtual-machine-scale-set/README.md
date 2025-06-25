@@ -17,7 +17,7 @@ This module deploys a Virtual Machine Scale Set.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/virtualMachineScaleSets` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachineScaleSets) |
+| `Microsoft.Compute/virtualMachineScaleSets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachineScaleSets) |
 | `Microsoft.Compute/virtualMachineScaleSets/extensions` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachineScaleSets/extensions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
@@ -80,8 +80,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -153,8 +153,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -224,8 +224,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -288,8 +288,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -366,8 +366,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -444,8 +444,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -513,8 +513,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -531,18 +531,30 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '256'
+        deleteOption: 'Delete'
+        diskIOPSReadWrite: 256
+        diskMBpsReadWrite: 256
+        diskSizeGB: 256
+        lun: 1
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'myCustomDataDiskName'
+        writeAcceleratorEnabled: false
       }
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '128'
+        deleteOption: 'Delete'
+        diskIOPSReadWrite: 256
+        diskMBpsReadWrite: 256
+        diskSizeGB: 128
+        lun: 2
         managedDisk: {
           storageAccountType: 'Premium_LRS'
         }
+        name: 'myCustomDataDiskName'
+        writeAcceleratorEnabled: false
       }
     ]
     diagnosticSettings: [
@@ -698,8 +710,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -728,18 +740,30 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "256",
+          "deleteOption": "Delete",
+          "diskIOPSReadWrite": 256,
+          "diskMBpsReadWrite": 256,
+          "diskSizeGB": 256,
+          "lun": 1,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "myCustomDataDiskName",
+          "writeAcceleratorEnabled": false
         },
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "128",
+          "deleteOption": "Delete",
+          "diskIOPSReadWrite": 256,
+          "diskMBpsReadWrite": 256,
+          "diskSizeGB": 128,
+          "lun": 2,
           "managedDisk": {
             "storageAccountType": "Premium_LRS"
-          }
+          },
+          "name": "myCustomDataDiskName",
+          "writeAcceleratorEnabled": false
         }
       ]
     },
@@ -921,8 +945,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -939,18 +963,30 @@ param dataDisks = [
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '256'
+    deleteOption: 'Delete'
+    diskIOPSReadWrite: 256
+    diskMBpsReadWrite: 256
+    diskSizeGB: 256
+    lun: 1
     managedDisk: {
       storageAccountType: 'Premium_LRS'
     }
+    name: 'myCustomDataDiskName'
+    writeAcceleratorEnabled: false
   }
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '128'
+    deleteOption: 'Delete'
+    diskIOPSReadWrite: 256
+    diskMBpsReadWrite: 256
+    diskSizeGB: 128
+    lun: 2
     managedDisk: {
       storageAccountType: 'Premium_LRS'
     }
+    name: 'myCustomDataDiskName'
+    writeAcceleratorEnabled: false
   }
 ]
 param diagnosticSettings = [
@@ -1097,12 +1133,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
-        diskEncryptionSet: {
-          id: '<id>'
-        }
+        diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
         storageAccountType: 'Premium_LRS'
       }
     }
@@ -1113,11 +1147,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       {
         caching: 'ReadOnly'
         createOption: 'Empty'
-        diskSizeGB: '128'
+        diskSizeGB: 128
+        lun: 1
         managedDisk: {
-          diskEncryptionSet: {
-            id: '<id>'
-          }
+          diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
           storageAccountType: 'Premium_LRS'
         }
       }
@@ -1190,12 +1223,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
-          "diskEncryptionSet": {
-            "id": "<id>"
-          },
+          "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
           "storageAccountType": "Premium_LRS"
         }
       }
@@ -1212,11 +1243,10 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
         {
           "caching": "ReadOnly",
           "createOption": "Empty",
-          "diskSizeGB": "128",
+          "diskSizeGB": 128,
+          "lun": 1,
           "managedDisk": {
-            "diskEncryptionSet": {
-              "id": "<id>"
-            },
+            "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
             "storageAccountType": "Premium_LRS"
           }
         }
@@ -1285,12 +1315,10 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
-    diskEncryptionSet: {
-      id: '<id>'
-    }
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     storageAccountType: 'Premium_LRS'
   }
 }
@@ -1301,11 +1329,10 @@ param dataDisks = [
   {
     caching: 'ReadOnly'
     createOption: 'Empty'
-    diskSizeGB: '128'
+    diskSizeGB: 128
+    lun: 1
     managedDisk: {
-      diskEncryptionSet: {
-        id: '<id>'
-      }
+      diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
       storageAccountType: 'Premium_LRS'
     }
   }
@@ -1369,8 +1396,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1435,8 +1462,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1495,8 +1522,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -1552,8 +1579,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -1561,6 +1588,22 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     osType: 'Windows'
     skuName: 'Standard_B12ms'
     // Non-required parameters
+    dataDisks: [
+      {
+        caching: 'ReadOnly'
+        createOption: 'Empty'
+        deleteOption: 'Delete'
+        diskIOPSReadWrite: 256
+        diskMBpsReadWrite: 256
+        diskSizeGB: 256
+        lun: 1
+        managedDisk: {
+          storageAccountType: 'Premium_LRS'
+        }
+        name: 'myCustomDataDiskName'
+        writeAcceleratorEnabled: false
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1735,8 +1778,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -1749,6 +1792,24 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       "value": "Standard_B12ms"
     },
     // Non-required parameters
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "ReadOnly",
+          "createOption": "Empty",
+          "deleteOption": "Delete",
+          "diskIOPSReadWrite": 256,
+          "diskMBpsReadWrite": 256,
+          "diskSizeGB": 256,
+          "lun": 1,
+          "managedDisk": {
+            "storageAccountType": "Premium_LRS"
+          },
+          "name": "myCustomDataDiskName",
+          "writeAcceleratorEnabled": false
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -1948,8 +2009,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -1957,6 +2018,22 @@ param osDisk = {
 param osType = 'Windows'
 param skuName = 'Standard_B12ms'
 // Non-required parameters
+param dataDisks = [
+  {
+    caching: 'ReadOnly'
+    createOption: 'Empty'
+    deleteOption: 'Delete'
+    diskIOPSReadWrite: 256
+    diskMBpsReadWrite: 256
+    diskSizeGB: 256
+    lun: 1
+    managedDisk: {
+      storageAccountType: 'Premium_LRS'
+    }
+    name: 'myCustomDataDiskName'
+    writeAcceleratorEnabled: false
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2122,8 +2199,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2190,8 +2267,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2256,8 +2333,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -2315,8 +2392,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     ]
     osDisk: {
-      createOption: 'fromImage'
-      diskSizeGB: '128'
+      createOption: 'FromImage'
+      diskSizeGB: 128
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -2467,8 +2544,8 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
     },
     "osDisk": {
       "value": {
-        "createOption": "fromImage",
-        "diskSizeGB": "128",
+        "createOption": "FromImage",
+        "diskSizeGB": 128,
         "managedDisk": {
           "storageAccountType": "Premium_LRS"
         }
@@ -2643,8 +2720,8 @@ param nicConfigurations = [
   }
 ]
 param osDisk = {
-  createOption: 'fromImage'
-  diskSizeGB: '128'
+  createOption: 'FromImage'
+  diskSizeGB: 128
   managedDisk: {
     storageAccountType: 'Premium_LRS'
   }
@@ -2883,6 +2960,254 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedDisk`](#parameter-osdiskmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machines in the scale set should be created. |
+| [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diffDiskSettings`](#parameter-osdiskdiffdisksettings) | object | Specifies the ephemeral Disk Settings for the operating system disk. |
+| [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`image`](#parameter-osdiskimage) | object | Specifies information about the unmanaged user image to base the scale set on. |
+| [`name`](#parameter-osdiskname) | string | The disk name. |
+| [`osType`](#parameter-osdiskostype) | string | This property allows you to specify the type of the OS that is included in the disk if creating a VM from user-image or a specialized VHD. |
+| [`vhdContainers`](#parameter-osdiskvhdcontainers) | array | Specifies the container urls that are used to store operating system disks for the scale set. |
+| [`writeAcceleratorEnabled`](#parameter-osdiskwriteacceleratorenabled) | bool | Specifies whether writeAccelerator should be enabled or disabled on the disk. |
+
+### Parameter: `osDisk.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`securityProfile`](#parameter-osdiskmanageddisksecurityprofile) | object | Specifies the security profile for the managed disk. |
+| [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.securityProfile`
+
+Specifies the security profile for the managed disk.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`securityEncryptionType`](#parameter-osdiskmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the security encryption type for the managed disk. |
+
+### Parameter: `osDisk.managedDisk.securityProfile.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.securityProfile.securityEncryptionType`
+
+Specifies the security encryption type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DiskWithVMGuestState'
+    'NonPersistedTPM'
+    'VMGuestStateOnly'
+  ]
+  ```
+
+### Parameter: `osDisk.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `osDisk.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `osDisk.createOption`
+
+Specifies how the virtual machines in the scale set should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Copy'
+    'Empty'
+    'FromImage'
+    'Restore'
+  ]
+  ```
+
+### Parameter: `osDisk.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.diffDiskSettings`
+
+Specifies the ephemeral Disk Settings for the operating system disk.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`option`](#parameter-osdiskdiffdisksettingsoption) | string | Specifies the ephemeral disk settings for operating system disk. |
+| [`placement`](#parameter-osdiskdiffdisksettingsplacement) | string | Specifies the ephemeral disk placement for operating system disk. |
+
+### Parameter: `osDisk.diffDiskSettings.option`
+
+Specifies the ephemeral disk settings for operating system disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Local'
+  ]
+  ```
+
+### Parameter: `osDisk.diffDiskSettings.placement`
+
+Specifies the ephemeral disk placement for operating system disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CacheDisk'
+    'NvmeDisk'
+    'ResourceDisk'
+  ]
+  ```
+
+### Parameter: `osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `osDisk.image`
+
+Specifies information about the unmanaged user image to base the scale set on.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`uri`](#parameter-osdiskimageuri) | string | Specifies the virtual hard disk's uri. |
+
+### Parameter: `osDisk.image.uri`
+
+Specifies the virtual hard disk's uri.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.name`
+
+The disk name.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.osType`
+
+This property allows you to specify the type of the OS that is included in the disk if creating a VM from user-image or a specialized VHD.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `osDisk.vhdContainers`
+
+Specifies the container urls that are used to store operating system disks for the scale set.
+
+- Required: No
+- Type: array
+
+### Parameter: `osDisk.writeAcceleratorEnabled`
+
+Specifies whether writeAccelerator should be enabled or disabled on the disk.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `osType`
 
 The chosen OS type.
@@ -2981,7 +3306,191 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
+| [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machines in the scale set should be created. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk. |
+| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk. |
+| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk. |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk. |
+| [`name`](#parameter-datadisksname) | string | The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used. |
+| [`writeAcceleratorEnabled`](#parameter-datadiskswriteacceleratorenabled) | bool | Specifies whether writeAccelerator should be enabled or disabled on the disk. |
+
+### Parameter: `dataDisks.lun`
+
+Specifies the logical unit number of the data disk.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `dataDisks.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`securityProfile`](#parameter-datadisksmanageddisksecurityprofile) | object | Specifies the security profile for the managed disk. |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.securityProfile`
+
+Specifies the security profile for the managed disk.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`securityEncryptionType`](#parameter-datadisksmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the security encryption type for the managed disk. |
+
+### Parameter: `dataDisks.managedDisk.securityProfile.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.securityProfile.securityEncryptionType`
+
+Specifies the security encryption type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DiskWithVMGuestState'
+    'NonPersistedTPM'
+    'VMGuestStateOnly'
+  ]
+  ```
+
+### Parameter: `dataDisks.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `dataDisks.caching`
+
+Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `dataDisks.createOption`
+
+Specifies how the virtual machines in the scale set should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Copy'
+    'Empty'
+    'FromImage'
+    'Restore'
+  ]
+  ```
+
+### Parameter: `dataDisks.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `dataDisks.diskIOPSReadWrite`
+
+The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.diskMBpsReadWrite`
+
+The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.name`
+
+The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.writeAcceleratorEnabled`
+
+Specifies whether writeAccelerator should be enabled or disabled on the disk.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings`
 
