@@ -780,7 +780,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2ds_v5'
+    fabricProfileSkuName: 'Standard_D2ads_v5'
     images: [
       {
         ephemeralType: 'CacheDisk'
@@ -840,7 +840,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2ds_v5"
+      "value": "Standard_D2ads_v5"
     },
     "images": {
       "value": [
@@ -902,7 +902,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_D2ds_v5'
+param fabricProfileSkuName = 'Standard_D2ads_v5'
 param images = [
   {
     ephemeralType: 'CacheDisk'
