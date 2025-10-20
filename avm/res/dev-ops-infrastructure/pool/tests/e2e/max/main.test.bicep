@@ -145,6 +145,7 @@ module testDeployment '../../../main.bicep' = [
             projects: [
               azureDevOpsProjectName
             ]
+            alias: 'my-mdp-alias'
             openAccess: false
           }
         ]
@@ -164,6 +165,10 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      staticIpAddressCount: 5
+      runTimeConfiguration: {
+        workFolder: '/mnt/storage/sdc/custom-work-folder'
+      }
       roleAssignments: [
         {
           roleDefinitionIdOrName: subscriptionResourceId(

@@ -28,6 +28,9 @@ param devCenterProjectResourceId string
 @description('Optional. The subnet id on which to put all machines created in the pool.')
 param subnetResourceId string?
 
+@description('Optional. The number of static public IP addresses for outgoing connections assigned to the pool.')
+param staticIpAddressCount int?
+
 @description('Required. Defines how the machine will be handled once it executed a job.')
 param agentProfile agentProfileType
 
@@ -43,8 +46,11 @@ param osProfile osProfileType = {
 @description('Optional. The storage profile of the machines in the pool.')
 param storageProfile storageProfileType?
 
+@description('Optional. The runtime configuration of the pool.')
+param runTimeConfiguration resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.properties.runtimeConfiguration?
+
 @description('Required. Defines the organization in which the pool will be used.')
-param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-01-21'>.properties.organizationProfile
+param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.properties.organizationProfile
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.tags?
@@ -195,12 +201,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-01-21' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-09-20' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
+    runtimeConfiguration: runTimeConfiguration
     agentProfile: agentProfile.kind == 'Stateful'
       ? {
           kind: 'Stateful'
@@ -232,6 +239,7 @@ resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-01-21' = {
       networkProfile: !empty(subnetResourceId)
         ? {
             subnetId: subnetResourceId!
+            staticIpAddressCount: staticIpAddressCount
           }
         : null
       osProfile: osProfile

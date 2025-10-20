@@ -18,7 +18,7 @@ This module deploys the Managed DevOps Pool resource.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.DevOpsInfrastructure/pools` | 2025-01-21 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devopsinfrastructure_pools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2025-01-21/pools)</li></ul> |
+| `Microsoft.DevOpsInfrastructure/pools` | 2025-09-20 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devopsinfrastructure_pools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevOpsInfrastructure/2025-09-20/pools)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
@@ -373,6 +373,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          alias: 'my-mdp-alias'
           openAccess: false
           parallelism: 1
           projects: [
@@ -428,6 +429,10 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         roleDefinitionIdOrName: 'Owner'
       }
     ]
+    runTimeConfiguration: {
+      workFolder: '/mnt/storage/sdc/custom-work-folder'
+    }
+    staticIpAddressCount: 5
     storageProfile: {
       dataDisks: [
         {
@@ -516,6 +521,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "alias": "my-mdp-alias",
             "openAccess": false,
             "parallelism": 1,
             "projects": [
@@ -581,6 +587,14 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           "roleDefinitionIdOrName": "Owner"
         }
       ]
+    },
+    "runTimeConfiguration": {
+      "value": {
+        "workFolder": "/mnt/storage/sdc/custom-work-folder"
+      }
+    },
+    "staticIpAddressCount": {
+      "value": 5
     },
     "storageProfile": {
       "value": {
@@ -661,6 +675,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      alias: 'my-mdp-alias'
       openAccess: false
       parallelism: 1
       projects: [
@@ -716,6 +731,10 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'Owner'
   }
 ]
+param runTimeConfiguration = {
+  workFolder: '/mnt/storage/sdc/custom-work-folder'
+}
+param staticIpAddressCount = 5
 param storageProfile = {
   dataDisks: [
     {
@@ -1107,6 +1126,8 @@ param organizationProfile = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed service identities assigned to this resource. |
 | [`osProfile`](#parameter-osprofile) | object | The OS profile of the agents in the pool. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`runTimeConfiguration`](#parameter-runtimeconfiguration) | object | The runtime configuration of the pool. |
+| [`staticIpAddressCount`](#parameter-staticipaddresscount) | int | The number of static public IP addresses for outgoing connections assigned to the pool. |
 | [`storageProfile`](#parameter-storageprofile) | object | The storage profile of the machines in the pool. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet id on which to put all machines created in the pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2753,6 +2774,20 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `runTimeConfiguration`
+
+The runtime configuration of the pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `staticIpAddressCount`
+
+The number of static public IP addresses for outgoing connections assigned to the pool.
+
+- Required: No
+- Type: int
 
 ### Parameter: `storageProfile`
 

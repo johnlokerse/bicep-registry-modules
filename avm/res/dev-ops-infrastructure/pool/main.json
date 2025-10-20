@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "6617806262263666306"
+      "version": "0.38.33.27573",
+      "templateHash": "2454023226690728592"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -826,6 +826,13 @@
         "description": "Optional. The subnet id on which to put all machines created in the pool."
       }
     },
+    "staticIpAddressCount": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The number of static public IP addresses for outgoing connections assigned to the pool."
+      }
+    },
     "agentProfile": {
       "$ref": "#/definitions/agentProfileType",
       "metadata": {
@@ -852,11 +859,21 @@
         "description": "Optional. The storage profile of the machines in the pool."
       }
     },
+    "runTimeConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevOpsInfrastructure/pools@2025-09-20#properties/properties/properties/runtimeConfiguration"
+        },
+        "description": "Optional. The runtime configuration of the pool."
+      },
+      "nullable": true
+    },
     "organizationProfile": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DevOpsInfrastructure/pools@2025-01-21#properties/properties/properties/organizationProfile"
+          "source": "Microsoft.DevOpsInfrastructure/pools@2025-09-20#properties/properties/properties/organizationProfile"
         },
         "description": "Required. Defines the organization in which the pool will be used."
       }
@@ -961,19 +978,20 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2025-01-21",
+      "apiVersion": "2025-09-20",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "runtimeConfiguration": "[parameters('runTimeConfiguration')]",
         "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
         "devCenterProjectResourceId": "[parameters('devCenterProjectResourceId')]",
         "fabricProfile": {
           "sku": {
             "name": "[parameters('fabricProfileSkuName')]"
           },
-          "networkProfile": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())]",
+          "networkProfile": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId'), 'staticIpAddressCount', parameters('staticIpAddressCount')), null())]",
           "osProfile": "[parameters('osProfile')]",
           "storageProfile": "[parameters('storageProfile')]",
           "kind": "Vmss",
@@ -1088,7 +1106,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2025-01-21', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2025-09-20', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1096,7 +1114,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-01-21', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-09-20', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
