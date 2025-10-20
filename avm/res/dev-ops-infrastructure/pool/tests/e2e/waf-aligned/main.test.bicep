@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
           ephemeralType: 'CacheDisk'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v2'
+      fabricProfileSkuName: 'Standard_D2ds_v5'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       organizationProfile: {
         kind: 'AzureDevOps'

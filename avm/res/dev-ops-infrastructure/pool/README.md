@@ -65,7 +65,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_DS2_v2'
+    fabricProfileSkuName: 'Standard_D2ds_v5'
     images: [
       {
         wellKnownImageName: 'windows-2022/latest'
@@ -120,7 +120,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2ds_v5"
     },
     "images": {
       "value": [
@@ -173,7 +173,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_DS2_v2'
+param fabricProfileSkuName = 'Standard_D2ds_v5'
 param images = [
   {
     wellKnownImageName: 'windows-2022/latest'
@@ -212,7 +212,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_DS2_v2'
+    fabricProfileSkuName: 'Standard_D2ds_v5'
     images: [
       {
         wellKnownImageName: 'windows-2022/latest'
@@ -256,7 +256,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2ds_v5"
     },
     "images": {
       "value": [
@@ -298,7 +298,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_DS2_v2'
+param fabricProfileSkuName = 'Standard_D2ds_v5'
 param images = [
   {
     wellKnownImageName: 'windows-2022/latest'
@@ -357,7 +357,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2_v2'
+    fabricProfileSkuName: 'Standard_D2ds_v5'
     images: [
       {
         aliases: [
@@ -499,7 +499,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_D2ds_v5"
     },
     "images": {
       "value": [
@@ -659,7 +659,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_D2_v2'
+param fabricProfileSkuName = 'Standard_D2ds_v5'
 param images = [
   {
     aliases: [
@@ -780,7 +780,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2_v2'
+    fabricProfileSkuName: 'Standard_D2ds_v5'
     images: [
       {
         ephemeralType: 'CacheDisk'
@@ -840,7 +840,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_D2ds_v5"
     },
     "images": {
       "value": [
@@ -902,7 +902,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_D2_v2'
+param fabricProfileSkuName = 'Standard_D2ds_v5'
 param images = [
   {
     ephemeralType: 'CacheDisk'
@@ -967,7 +967,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_DS2_v2'
+    fabricProfileSkuName: 'Standard_D2ds_v5'
     images: [
       {
         wellKnownImageName: 'windows-2022/latest'
@@ -1025,7 +1025,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_D2ds_v5"
     },
     "images": {
       "value": [
@@ -1081,7 +1081,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_DS2_v2'
+param fabricProfileSkuName = 'Standard_D2ds_v5'
 param images = [
   {
     wellKnownImageName: 'windows-2022/latest'

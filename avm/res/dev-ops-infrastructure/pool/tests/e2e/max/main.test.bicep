@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      fabricProfileSkuName: 'Standard_D2_v2'
+      fabricProfileSkuName: 'Standard_D2ds_v5'
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [
